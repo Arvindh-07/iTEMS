@@ -3,8 +3,42 @@
 ################################################################################
 
 *.vsidx
-/iTEMS/obj/Debug/net8.0/iTEMS.AssemblyInfo.cs
-/iTEMS/obj/Debug/net8.0/iTEMS.assets.cache
-/iTEMS/obj/Debug/net8.0/iTEMS.AssemblyInfoInputs.cache
-/iTEMS/obj/Debug/net8.0/iTEMS.GeneratedMSBuildEditorConfig.editorconfig
 /iTEMS/obj/Debug/net8.0/apphost.exe
+/iTEMS/obj/Debug/net8.0/iTEMS.AssemblyInfo.cs
+/iTEMS/obj/Debug/net8.0/iTEMS.AssemblyInfoInputs.cache
+/iTEMS/obj/project.nuget.cache
+/iTEMS/obj/project.assets.json
+/iTEMS/obj/iTEMS.csproj.nuget.g.props
+/iTEMS/obj/iTEMS.csproj.nuget.dgspec.json
+/iTEMS/obj/Debug/net8.0/iTEMS.GeneratedMSBuildEditorConfig.editorconfig
+/iTEMS/obj/Debug/net8.0/iTEMS.csproj.AssemblyReference.cache
+/iTEMS/obj/Debug/net8.0/iTEMS.assets.cache
+/.vs/iTEMS/v17/.suo
+<<<<<<< HEAD
+=======
+/.gitignore
+/.gitignore
+>>>>>>> 8e6e81c8949a8dddb120353c46ae5c765dfc1957
+/.vs/iTEMS/v17/DocumentLayout.json
+/iTEMS/bin/Debug/net8.0/iTEMS.dll
+/iTEMS/bin/Debug/net8.0/iTEMS.exe
+/iTEMS/bin/Debug/net8.0/iTEMS.pdb
+/iTEMS/bin/Debug/net8.0/iTEMS.staticwebassets.runtime.json
+/iTEMS/obj/Debug/net8.0/ref/iTEMS.dll
+/iTEMS/obj/Debug/net8.0/refint/iTEMS.dll
+/iTEMS/obj/Debug/net8.0/iTEMS.csproj.CoreCompileInputs.cache
+/iTEMS/obj/Debug/net8.0/iTEMS.csproj.FileListAbsolute.txt
+/iTEMS/obj/Debug/net8.0/iTEMS.dll
+/iTEMS/obj/Debug/net8.0/iTEMS.genruntimeconfig.cache
+/iTEMS/obj/Debug/net8.0/iTEMS.pdb
+/iTEMS/obj/Debug/net8.0/iTEMS.sourcelink.json
+/iTEMS/obj/Debug/net8.0/staticwebassets.build.json
+/iTEMS/obj/Debug/net8.0/staticwebassets.development.json
+/iTEMS/obj/Debug/net8.0/staticwebassets.pack.json
+<<<<<<< HEAD
+=======
+/.vs/iTEMS/DesignTimeBuild/.dtbcache.v2
+/iTEMS/obj/Debug/net8.0/project.razor.vs.bin
+>>>>>>> 8e6e81c8949a8dddb120353c46ae5c765dfc1957
+/.vs/iTEMS/DesignTimeBuild/.dtbcache.v2
+/.vs/iTEMS/DesignTimeBuild/.dtbcache.v2
