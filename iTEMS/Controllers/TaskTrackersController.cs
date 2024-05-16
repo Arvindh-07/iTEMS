@@ -191,6 +191,11 @@ namespace iTEMS.Controllers
                 // Set the ModifiedOn property to the current date and time
                 taskTracker.ModifiedOn = DateTime.Now;
 
+                if (taskTracker.Status == TaskTrackerStatus.Completed.ToString())
+                {
+                    taskTracker.UpdateActualTime();
+                }
+
                 _context.Update(taskTracker);
                 await _context.SaveChangesAsync();
 

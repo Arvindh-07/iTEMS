@@ -80,6 +80,15 @@ namespace iTEMS.Models
 
         }
 
+        public void UpdateActualTime()
+        {
+            if (Status == TaskTrackerStatus.Completed.ToString())
+            {
+                var timeSpan = DateTime.Now - StartDate;
+                ActualTime = $"{timeSpan.Days} days, {timeSpan.Hours} hours, {timeSpan.Minutes} minutes";
+            }
+        }
+
 
 
     }
