@@ -5,102 +5,206 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AdminLTE 3 | General Form Elements</title>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.UserName" class="form-control" aria-required="true" placeholder="Username" />
-                <label asp-for="Input.UserName">Username</label>
-                <span asp-validation-for="Input.UserName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <!-- Existing registration fields -->
-            <div class="form-floating mb-3">
-                <input asp-for="Input.EmpNo" class="form-control" aria-required="true" placeholder="Employee Number" />
-                <label asp-for="Input.EmpNo">Employee Number</label>
-                <span asp-validation-for="Input.EmpNo" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
-                <label asp-for="Input.FirstName">First Name</label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
-                <label asp-for="Input.LastName">Last Name</label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" aria-required="true" placeholder="Phone Number" />
-                <label asp-for="Input.PhoneNumber">Phone Number</label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Country" class="control-label">Country</label>
-                <select asp-for="Input.Country" class="form-control" aria-required="true">
-                    <option value="">Select Country</option>
-                    @foreach (var country in Model.Countries)
-                    {
-                        <option value="@country">@country</option>
-                    }
-                </select>
-                <span asp-validation-for="Input.Country" class="text-danger"></span>
-            </div>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/AdminLTE/plugins/fontawesome-free/css/all.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="~/AdminLTE/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/AdminLTE/dist/css/adminlte.min.css">
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.DateofBirth" class="form-control" aria-required="true" placeholder="Date Of Birth" />
-                <label asp-for="Input.DateofBirth">Date Of Birth</label>
-                <span asp-validation-for="Input.DateofBirth" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Address" class="form-control" aria-required="true" placeholder="Address" />
-                <label asp-for="Input.Address">Address</label>
-                <span asp-validation-for="Input.Address" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Department" class="form-control" aria-required="true" placeholder="Department" />
-                <label asp-for="Input.Department">Department</label>
-                <span asp-validation-for="Input.Department" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Designation" class="form-control" aria-required="true" placeholder="Designation" />
-                <label asp-for="Input.Designation">Designation</label>
-                <span asp-validation-for="Input.Designation" class="text-danger"></span>
-            </div>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+        }
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .card {
+            max-width: 600px; /* Increase the max-width */
+            width: 90%;
+            padding: 10px;
+            border-radius: 15px;
+            background-color: white;
+        }
+
+        .card-header {
+            border-radius: 10px;
+        }
+
+        .card-title {
+            float: none;
+            text-align: center; /* Center the Log In header */
+            font-size: 24px; /* Increase text size */
+            font-weight: bold; /* Make it bold */
+            margin: 0;
+            /*margin-bottom: 30px;  Add some bottom margin for spacing */
+        }
+
+        .card-footer {
+            text-align: center; /* Center the footer */
+        }
+
+            .card-footer a {
+                color: #3897f0;
+                text-decoration: none;
+            }
+
+                .card-footer a:hover {
+                    text-decoration: underline;
+                }
+
+        .form-check-label {
+            margin-left: 20px; /* Reset the margin for form-check-label */
+        }
+
+        .btn-primary {
+            width: 83%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0096FF;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<div class="row justify-content-center">
+    <div class="container">
+        <div class="card card-dark">
+            <div class="card-header">
+                <h3 class="card-title">Create a new account</h3>
+            </div>
+            <div class="card-body">
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.UserName" class="col-sm-4 col-form-label">Username</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" type="text" value="" />
+                        </div>
+                        <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.Email" class="col-sm-4 col-form-label">Email</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="Email" type="text" value="" />
+                        </div>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.Password" class="col-sm-4 col-form-label">Password</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="Password" aria-required="true" placeholder="Password" type="text" value="" />
+                        </div>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.ConfirmPassword" class="col-sm-4 col-form-label">Confirm Password</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" type="text" value="" />
+                        </div>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.FirstName" class="col-sm-4 col-form-label">First Name</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.FirstName" class="form-control" autocomplete="first-name" aria-required="true" placeholder="First Name" type="text" value="" />
+                        </div>
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.LastName" class="col-sm-4 col-form-label">Last Name</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.LastName" class="form-control" autocomplete="last-name" aria-required="true" placeholder="Last Name" type="text" value="" />
+                        </div>
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.PhoneNumber" class="col-sm-4 col-form-label">Phone Number</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="phone-number" aria-required="true" placeholder="Phone Number" type="text" value="" />
+                        </div>
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.Country" class="col-sm-4 col-form-label">Country</label>
+                        <div class="col-sm-12">
+                            <select asp-for="Input.Country" class="form-control" aria-required="true">
+                                <option value="">Select Country</option>
+                                @foreach (var country in Model.Countries)
+                                {
+                                    <option value="@country">@country</option>
+                                }
+                            </select>
+                        </div>                       
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.DateofBirth" class="col-sm-4 col-form-label">Date Of Birth</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.DateofBirth" class="form-control" aria-required="true" placeholder="Date Of Birth" />
+                        </div>                                             
+                        <span asp-validation-for="Input.DateofBirth" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.Department" class="col-sm-4 col-form-label">Department</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.Department" class="form-control" autocomplete="department" aria-required="true" placeholder="Department" type="text" value="" />
+                        </div>
+                        <span asp-validation-for="Input.Department" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Input.Designation" class="col-sm-4 col-form-label">Designation</label>
+                        <div class="col-sm-12">
+                            <input asp-for="Input.Designation" class="form-control" autocomplete="designation" aria-required="true" placeholder="Designation" type="text" value="" />
+                        </div>
+                        <span asp-validation-for="Input.Designation" class="text-danger"></span>
+                    </div>
+
+                    <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3>Use another service to register</h3>
+        </div>
+    
+        <div class="card-body">
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
                     <div>
                         <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
+                            There are no external authentication services configured. See this
+                            <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article about setting up this ASP.NET application to support logging in via external services</a>.
                         </p>
                     </div>
                 }
@@ -111,14 +215,16 @@
                             <p>
                                 @foreach (var provider in Model.ExternalLogins!)
                                 {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                        @provider.DisplayName
+                                    </button>
                                 }
                             </p>
                         </div>
                     </form>
                 }
             }
-        </section>
+        </div>
     </div>
 </div>
 
