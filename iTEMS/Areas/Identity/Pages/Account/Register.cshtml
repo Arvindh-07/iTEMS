@@ -96,56 +96,56 @@
                         <label asp-for="Input.UserName" class="col-sm-4 col-form-label">Username</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" type="text" value="" />
-                        </div>
-                        <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                            <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                        </div>                        
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.Email" class="col-sm-4 col-form-label">Email</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="Email" type="text" value="" />
-                        </div>
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>    
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.Password" class="col-sm-4 col-form-label">Password</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.Password" class="form-control" autocomplete="Password" aria-required="true" placeholder="Password" type="text" value="" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.ConfirmPassword" class="col-sm-4 col-form-label">Confirm Password</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" type="text" value="" />
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.FirstName" class="col-sm-4 col-form-label">First Name</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.FirstName" class="form-control" autocomplete="first-name" aria-required="true" placeholder="First Name" type="text" value="" />
+                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.LastName" class="col-sm-4 col-form-label">Last Name</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.LastName" class="form-control" autocomplete="last-name" aria-required="true" placeholder="Last Name" type="text" value="" />
+                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.PhoneNumber" class="col-sm-4 col-form-label">Phone Number</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="phone-number" aria-required="true" placeholder="Phone Number" type="text" value="" />
+                            <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
 
                     <div class="form-group row">
@@ -158,32 +158,32 @@
                                     <option value="@country">@country</option>
                                 }
                             </select>
+                            <span asp-validation-for="Input.Country" class="text-danger"></span>
                         </div>                       
-                        <span asp-validation-for="Input.Country" class="text-danger"></span>
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.DateofBirth" class="col-sm-4 col-form-label">Date Of Birth</label>
                         <div class="col-sm-12">
-                            <input asp-for="Input.DateofBirth" class="form-control" aria-required="true" placeholder="Date Of Birth" />
+                            <input asp-for="Input.DateofBirth" class="form-control" type="date" aria-required="true" placeholder="Date Of Birth" />
+                            <span asp-validation-for="Input.DateofBirth" class="text-danger"></span>
                         </div>                                             
-                        <span asp-validation-for="Input.DateofBirth" class="text-danger"></span>
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.Department" class="col-sm-4 col-form-label">Department</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.Department" class="form-control" autocomplete="department" aria-required="true" placeholder="Department" type="text" value="" />
+                            <span asp-validation-for="Input.Department" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="Input.Department" class="text-danger"></span>
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.Designation" class="col-sm-4 col-form-label">Designation</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.Designation" class="form-control" autocomplete="designation" aria-required="true" placeholder="Designation" type="text" value="" />
+                            <span asp-validation-for="Input.Designation" class="text-danger"></span>
                         </div>
-                        <span asp-validation-for="Input.Designation" class="text-danger"></span>
                     </div>
 
                     <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
