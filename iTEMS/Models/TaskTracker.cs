@@ -27,7 +27,7 @@ namespace iTEMS.Models
 
         
         [Display(Name = "Priority")]
-        public string? Priority { get; set; }
+        public TaskPriority Priority { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Due Date")]
@@ -64,6 +64,8 @@ namespace iTEMS.Models
 
         [ForeignKey("AssignedTo")]
         public Employee Employee { get; set; }
+
+
         // Consider adding navigation properties for dependencies and related tasks if using Entity Framework
 
         // Example navigation properties:
@@ -79,6 +81,14 @@ namespace iTEMS.Models
             Blocked
 
         }
+
+        public enum TaskPriority
+        {
+            High = 1,
+            Medium = 2,
+            Low = 3
+        }
+
 
         public void UpdateActualTime()
         {

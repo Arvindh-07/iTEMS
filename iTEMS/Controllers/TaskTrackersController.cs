@@ -78,6 +78,7 @@ namespace iTEMS.Controllers
             ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Name");
             ViewData["AssignedTo"] = new SelectList(_context.Employees, "Id", "UserName");
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(TaskTrackerStatus)));
+            ViewData["PriorityList"] = new SelectList(Enum.GetValues(typeof(TaskPriority))); // Add this line
 
             return View();
         }
@@ -140,6 +141,7 @@ namespace iTEMS.Controllers
             ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Name", taskTracker.ProjectId);
             ViewData["AssignedTo"] = new SelectList(_context.Employees, "Id", "UserName", taskTracker.Employee);
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(TaskTrackerStatus)), taskTracker.Status);
+            ViewData["PriorityList"] = new SelectList(Enum.GetValues(typeof(TaskPriority)), taskTracker.Priority); // Add this line
             return View(taskTracker);
         }
 
@@ -162,6 +164,7 @@ namespace iTEMS.Controllers
             ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Name", taskTracker.ProjectId);
             ViewData["AssignedTo"] = new SelectList(_context.Employees, "Id", "UserName", taskTracker.Employee);
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(TaskTrackerStatus)), taskTracker.Status);
+            ViewData["PriorityList"] = new SelectList(Enum.GetValues(typeof(TaskPriority)), taskTracker.Priority); // Add this line
             return View(taskTracker);
         }
 
@@ -221,6 +224,7 @@ namespace iTEMS.Controllers
             ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Name", taskTracker.ProjectId);
             ViewData["AssignedTo"] = new SelectList(_context.Employees, "Id", "UserName", taskTracker.Employee);
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(TaskTrackerStatus)), taskTracker.Status);
+            ViewData["PriorityList"] = new SelectList(Enum.GetValues(typeof(TaskPriority)), taskTracker.Priority); // Add this line
 
             // Find the first error in ModelState and add an error message indicating the unfilled field
             var firstError = ModelState.Values.FirstOrDefault(v => v.Errors.Any());
