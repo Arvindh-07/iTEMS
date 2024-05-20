@@ -286,7 +286,7 @@ namespace iTEMS.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("iTEMS.Models.InAppNotification", b =>
@@ -310,7 +310,7 @@ namespace iTEMS.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InAppNotification", (string)null);
+                    b.ToTable("InAppNotification");
                 });
 
             modelBuilder.Entity("iTEMS.Models.Notification", b =>
@@ -344,7 +344,7 @@ namespace iTEMS.Data.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("iTEMS.Models.Project", b =>
@@ -400,7 +400,7 @@ namespace iTEMS.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Project", (string)null);
+                    b.ToTable("Project");
                 });
 
             modelBuilder.Entity("iTEMS.Models.TaskTracker", b =>
@@ -447,8 +447,8 @@ namespace iTEMS.Data.Migrations
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Priority")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -471,7 +471,7 @@ namespace iTEMS.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("TaskTrackers", (string)null);
+                    b.ToTable("TaskTrackers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
