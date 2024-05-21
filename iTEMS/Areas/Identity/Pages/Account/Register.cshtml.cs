@@ -46,6 +46,13 @@ namespace iTEMS.Areas.Identity.Pages.Account
             Countries = new Employee().Countries;
             States = new Employee().States;
             Areas = new Employee().Areas;
+
+            // Initialize Input with default values
+            Input = new InputModel
+            {
+                State = "Default",
+                AreaByState = "Default"
+            };
         }
 
         [BindProperty]

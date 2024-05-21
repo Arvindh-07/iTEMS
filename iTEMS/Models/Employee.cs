@@ -67,7 +67,8 @@ namespace iTEMS.Models
                 "Kota Kinabalu", "Sandakan", "Tawau", "Lahad Datu", "Keningau",
                 "Kuching", "Sibu", "Miri", "Bintulu", "Limbang",
                 "Shah Alam", "Petaling Jaya", "Subang Jaya", "Klang", "Seri Kembangan",
-                "Kuala Terengganu", "Chukai", "Dungun", "Kuala Berang", "Marang"
+                "Kuala Terengganu", "Chukai", "Dungun", "Kuala Berang", "Marang",
+                "Default"
             };
 
             States = new List<string>
@@ -84,7 +85,8 @@ namespace iTEMS.Models
                 "Sabah",
                 "Sarawak",
                 "Selangor",
-                "Terengganu"
+                "Terengganu",
+                "Default"
             };
 
             // Initialize the list of countries
