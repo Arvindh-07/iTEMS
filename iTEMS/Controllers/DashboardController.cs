@@ -1,10 +1,12 @@
 ﻿using iTEMS.Data;
 using iTEMS.Models;
 using iTEMS.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
+[Authorize]
 public class DashboardController : Controller
 {
     private readonly ApplicationDbContext _context;
