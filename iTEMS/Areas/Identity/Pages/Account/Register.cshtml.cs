@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using iTEMS.Data;
+using iTEMS.Data.Migrations;
 using iTEMS.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +29,8 @@ namespace iTEMS.Areas.Identity.Pages.Account
         private readonly ApplicationDbContext _dbContext;
 
         public List<string> Countries { get; set; }
+        public List<string> States { get; set; }
+        public List<string> Areas { get; set; }
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -41,6 +44,8 @@ namespace iTEMS.Areas.Identity.Pages.Account
             _emailSender = emailSender;
             _dbContext = dbContext;
             Countries = new Employee().Countries;
+            States = new Employee().States;
+            Areas = new Employee().Areas;
         }
 
         [BindProperty]
@@ -107,6 +112,13 @@ namespace iTEMS.Areas.Identity.Pages.Account
             [Display(Name = "Designation")]
             public string Designation { get; set; }
 
+            [Display(Name = "State")]
+            public string State { get; set; }
+
+            [Display(Name = "Area")]
+            public string AreaByState { get; set; }
+
+
         }
 
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
@@ -143,6 +155,8 @@ namespace iTEMS.Areas.Identity.Pages.Account
                         LastName = Input.LastName,
                         PhoneNumber = Input.PhoneNumber,
                         Country = Input.Country,
+                        State = Input.State,
+                        AreaByState = Input.AreaByState,
                         DateofBirth = Input.DateofBirth,
                         Address = Input.Address,
                         Department = Input.Department,

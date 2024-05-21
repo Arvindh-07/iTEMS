@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using iTEMS.Data;
 
@@ -11,9 +12,11 @@ using iTEMS.Data;
 namespace iTEMS.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521002832_Addstateandarea")]
+    partial class Addstateandarea
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,10 +241,6 @@ namespace iTEMS.Data.Migrations
                     b.Property<string>("AreaByState")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Areas")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Countries")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -289,10 +288,6 @@ namespace iTEMS.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("States")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")

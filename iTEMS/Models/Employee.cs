@@ -20,8 +20,15 @@ namespace iTEMS.Models
         public string? PhoneNumber { get; set; }
         [Display(Name = "Email Address")]
         public string? Email { get; set; }
+
         [Display(Name = "Country")]
         public string? Country { get; set; }
+
+        [Display(Name = "State")]
+        public string? State { get; set; }
+
+        [Display(Name = "Area")]
+        public string? AreaByState { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Date Of Birth")]
@@ -38,10 +45,48 @@ namespace iTEMS.Models
         public string? RoleId { get; set; }
 
         public List<string> Countries { get; set; }
+        public List<string> States { get; set; }
+        public List <string> Areas { get; set; }
 
         // Constructor to initialize the list of countries
         public Employee()
         {
+
+
+            Areas = new List<string>
+            {
+                "Johor Bahru", "Batu Pahat", "Kluang", "Muar", "Segamat",
+                "Alor Setar", "Kulim", "Sungai Petani", "Langkawi", "Baling",
+                "Kota Bharu", "Pangkalan Chepa", "Tumpat", "Kuala Krai", "Gua Musang",
+                "Melaka City", "Ayer Keroh", "Alor Gajah", "Jasin", "Masjid Tanah",
+                "Seremban", "Port Dickson", "Nilai", "Bahau", "Tampin",
+                "Kuantan", "Temerloh", "Jerantut", "Bentong", "Raub",
+                "Ipoh", "Taiping", "Sitiawan", "Teluk Intan", "Kampar", "Batu Gajah",
+                "Kangar", "Arau", "Kuala Perlis",
+                "George Town", "Butterworth", "Seberang Perai", "Bukit Mertajam", "Gelugor",
+                "Kota Kinabalu", "Sandakan", "Tawau", "Lahad Datu", "Keningau",
+                "Kuching", "Sibu", "Miri", "Bintulu", "Limbang",
+                "Shah Alam", "Petaling Jaya", "Subang Jaya", "Klang", "Seri Kembangan",
+                "Kuala Terengganu", "Chukai", "Dungun", "Kuala Berang", "Marang"
+            };
+
+            States = new List<string>
+            {
+                "Johor",
+                "Kedah",
+                "Kelantan",
+                "Melaka",
+                "Negeri Sembilan",
+                "Pahang",
+                "Perak",
+                "Perlis",
+                "Penang",
+                "Sabah",
+                "Sarawak",
+                "Selangor",
+                "Terengganu"
+            };
+
             // Initialize the list of countries
             Countries = new List<string>
             {
