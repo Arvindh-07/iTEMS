@@ -170,7 +170,7 @@
                     <div class="form-group row">
                         <label asp-for="Input.Country" class="col-sm-4 col-form-label">Country</label>
                         <div class="col-sm-12">
-                            <select asp-for="Input.Country" class="form-control" aria-required="true">
+                            <select id="countrySelect" asp-for="Input.Country" class="form-control" aria-required="true">
                                 <option value="">Select Country</option>
                                 @foreach (var country in Model.Countries)
                                 {
@@ -178,8 +178,45 @@
                                 }
                             </select>
                             <span asp-validation-for="Input.Country" class="text-danger"></span>
-                        </div>                       
+                        </div>
                     </div>
+
+                    <p id="selectedCountry"></p>
+
+                    <div class="form-group row" style="display: none;" id="stateDropdown">
+                        <!-- Hide initially -->
+                        <label asp-for="Input.State" class="col-sm-4 col-form-label">State</label>
+                        <div class="col-sm-12">
+                            <select id="stateSelect" asp-for="Input.State" class="form-control" aria-required="false">
+                                <option value="">Select State</option>
+                                @foreach (var state in Model.States)
+                                {
+                                    <option value="@state">@state</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.State" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <p id="selectedState"></p>
+
+                    <div class="form-group row" style="display: none;" id="areaDropdown">
+                        <!-- Hide initially -->
+                        <label asp-for="Input.AreaByState" class="col-sm-4 col-form-label">Area</label>
+                        <div class="col-sm-12">
+                            <select id="areaSelect" asp-for="Input.AreaByState" class="form-control" aria-required="false">
+                                <option value="">Select Area</option>
+                                @foreach (var area in Model.Areas)
+                                {
+                                    <option value="@area">@area</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.AreaByState" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <p id="selectedArea"></p>
+
 
                     <div class="form-group row">
                         <label asp-for="Input.DateofBirth" class="col-sm-4 col-form-label">Date Of Birth</label>
@@ -292,3 +329,37 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<script>
+    // JavaScript code to update the <p> elements with the selected values
+    document.getElementById('countrySelect').addEventListener('change', function () {
+        var selectedCountry = this.value;
+        document.getElementById('selectedCountry').innerText = selectedCountry;
+
+        // Check if the selected country is Malaysia
+        if (selectedCountry === 'Malaysia') {
+            document.getElementById('stateDropdown').style.display = 'block'; // Show the state dropdown
+        } else {
+            document.getElementById('stateDropdown').style.display = 'none'; // Hide the state dropdown
+            document.getElementById('selectedState').innerText = ''; // Clear the selected state
+        }
+    });
+
+    document.getElementById('stateSelect').addEventListener('change', function () {
+        var selectedState = this.value;
+        document.getElementById('selectedState').innerText = selectedState;
+
+        // Check if a state is selected
+        if (selectedState) {
+            document.getElementById('areaDropdown').style.display = 'block'; // Show the area dropdown
+        } else {
+            document.getElementById('areaDropdown').style.display = 'none'; // Hide the area dropdown
+            document.getElementById('selectedArea').innerText = ''; // Clear the selected area
+        }
+    });
+
+    document.getElementById('areaSelect').addEventListener('change', function () {
+        var selectedArea = this.value;
+        document.getElementById('selectedArea').innerText = selectedArea;
+    });
+</script>
