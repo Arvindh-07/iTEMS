@@ -37,5 +37,10 @@
 /.vs/iTEMS/DesignTimeBuild/.dtbcache.v2
 /.vs/iTEMS/DesignTimeBuild/.dtbcache.v2
 *.wsuo
+<<<<<<< HEAD
 *.v2
 *.bin
+=======
+*.cs
+*.cshtml
+>>>>>>> Latest-Most-Updated-Code

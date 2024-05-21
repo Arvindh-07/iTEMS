@@ -79,6 +79,15 @@
             color: #fff;
             cursor: pointer;
         }
+
+        .toggle-password {
+            color: #0096FF;
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
     </style>
 </head>
 
@@ -110,18 +119,19 @@
 
                     <div class="form-group row">
                         <label asp-for="Input.Password" class="col-sm-4 col-form-label">Password</label>
-                        <div class="col-sm-12">
-                            <input asp-for="Input.Password" class="form-control" autocomplete="Password" aria-required="true" placeholder="Password" type="text" value="" />
+                        <div class="col-sm-12 position-relative">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" id="newPassword" type="password" />
+                            <span id="toggleNewPasswordText" class="toggle-password" onclick="toggleNewPasswordVisibility()">Show</span>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label asp-for="Input.ConfirmPassword" class="col-sm-4 col-form-label">Confirm Password</label>
-                        <div class="col-sm-12">
-                            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" type="text" value="" />
-                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                            
+                        <div class="col-sm-12 position-relative">
+                            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" id="confirmPassword" type="password" />
+                            <span id="toggleConfirmPasswordText" class="toggle-password" onclick="toggleConfirmPasswordVisibility()">Show</span>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>                            
                         </div>
                     </div>
 
@@ -129,8 +139,8 @@
                         <label asp-for="Input.EmpNo" class="col-sm-4 col-form-label">Employee Number</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.EmpNo" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Employee Number" type="text" value="" />
-                        </div>
-                        <span asp-validation-for="Input.EmpNo" class="text-danger"></span>
+                            <span asp-validation-for="Input.EmpNo" class="text-danger"></span>
+                        </div>                     
                     </div>
 
                     <div class="form-group row">
@@ -220,8 +230,8 @@
                         <label asp-for="Input.Address" class="col-sm-4 col-form-label">Address</label>
                         <div class="col-sm-12">
                             <input asp-for="Input.Address" class="form-control" aria-required="true" placeholder="Address" />
-                        </div>
-                        <span asp-validation-for="Input.Address" class="text-danger"></span>
+                            <span asp-validation-for="Input.Address" class="text-danger"></span>
+                        </div>                      
                     </div>
 
                     <div class="form-group row">
@@ -287,6 +297,34 @@
         </div>
     </div>
 </div>
+
+<script>
+        function toggleNewPasswordVisibility() {
+            var passwordField = document.getElementById("newPassword");
+            var toggleText = document.getElementById("toggleNewPasswordText");
+            var passwordFieldType = passwordField.getAttribute("type");
+            if (passwordFieldType === "password") {
+                passwordField.setAttribute("type", "text");
+                toggleText.textContent = "Hide";
+            } else {
+                passwordField.setAttribute("type", "password");
+                toggleText.textContent = "Show";
+            }
+        }
+
+        function toggleConfirmPasswordVisibility() {
+            var passwordField = document.getElementById("confirmPassword");
+            var toggleText = document.getElementById("toggleConfirmPasswordText");
+            var passwordFieldType = passwordField.getAttribute("type");
+            if (passwordFieldType === "password") {
+                passwordField.setAttribute("type", "text");
+                toggleText.textContent = "Hide";
+            } else {
+                passwordField.setAttribute("type", "password");
+                toggleText.textContent = "Show";
+            }
+        }
+    </script>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
