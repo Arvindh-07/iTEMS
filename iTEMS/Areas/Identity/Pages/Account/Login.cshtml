@@ -84,6 +84,15 @@
             color: #fff;
             cursor: pointer;
         }
+
+        .toggle-password {
+            color: #0096FF;
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
     </style>
 </head>
 
@@ -100,16 +109,17 @@
                     <label asp-for="Input.UserName" class="offset-sm-1 col-sm-2 col-form-label">Username</label>
                     <div class="offset-sm-1 col-sm-10 offset-sm-1">
                         <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" type="text" value="" />
+                        <span asp-validation-for="Input.UserName" class="text-danger"></span>
                     </div>
-                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group row">
                     <label asp-for="Input.Password" class="offset-sm-1 col-sm-2 col-form-label">Password</label>
-                    <div class="offset-sm-1 col-sm-10 offset-sm-1">
-                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" />
-                    </div>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    <div class="offset-sm-1 col-sm-10 offset-sm-1 position-relative">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" id="password" type="password" />
+                        <span id="togglePasswordText" class="toggle-password" onclick="togglePasswordVisibility()">Show</span>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>                   
                 </div>
 
                 <div class="form-group row">
@@ -152,9 +162,20 @@
     $(function () {
         bsCustomFileInput.init();
     });
+
+    function togglePasswordVisibility() {
+            var passwordField = document.getElementById("password");
+            var toggleText = document.getElementById("togglePasswordText");
+            var passwordFieldType = passwordField.getAttribute("type");
+            if (passwordFieldType === "password") {
+                passwordField.setAttribute("type", "text");
+                toggleText.textContent = "Hide";
+            } else {
+                passwordField.setAttribute("type", "password");
+                toggleText.textContent = "Show";
+            }
+        }
 </script>
-
-
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
