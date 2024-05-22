@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,6 +19,20 @@
     <link rel="stylesheet" href="~/AdminLTE/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="~/AdminLTE/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <!-- Theme style -->
+    <style>
+        .notification-unopened {
+            background-color: #f8d7da; /* Light red background for unopened notifications */
+        }
+
+        .notification-opened {
+            background-color: #d4edda; /* Light green background for opened notifications */
+        }
+
+        .transparent-btn {
+            background-color: transparent;
+            border-color: transparent;
+        }
+    </style>
 
 </head>
 <body class="hold-transition dark-mode sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -61,8 +77,6 @@
 
 
 
-
-
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
@@ -78,14 +92,20 @@
                         {
                             @foreach (var notification in ViewBag.Notifications)
                             {
-                                // Check if the notification belongs to the current user
                                 if (notification.UserName == User.Identity.Name)
                                 {
-                                    <a href="TaskTrackers" class="dropdown-item" style="word-wrap: break-word; white-space: normal; overflow: hidden; text-overflow: ellipsis;" onclick="notificationClicked('@notification.Id')">
-                                        <span class="float-left text-muted text-sm">@notification.Timestamp.ToString("MMM dd, yyyy")</span>
-                                        <br />
-                                        <i class="fas fa-envelope mr-2"></i> @notification.Message
-                                    </a>
+                                    var notificationClass = notification.IsOpened ? "notification-opened" : "notification-unopened";
+
+                                    <div id="notification-@notification.Id" class="dropdown-item @notificationClass" style="word-wrap: break-word; white-space: normal; overflow: hidden; text-overflow: ellipsis;">
+                                        <a href="TaskTrackers" class="notification-link" onclick="notificationClicked('@notification.Id')">
+                                            <span class="float-left text-muted text-sm">@notification.Timestamp.ToString("MMM dd, yyyy")</span>
+                                            <br />
+                                            <i class="fas fa-envelope mr-2"></i> @notification.Message
+                                        </a>
+                                        <button type="button" class="btn btn-sm float-right transparent-btn" onclick="deleteNotification('@notification.Id')" title="Delete Notification">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 }
                             }
                         }
@@ -93,7 +113,6 @@
                         {
                             <span class="dropdown-item">No notifications</span>
                         }
-                        @* <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a> *@
                     </div>
                 </li>
 
@@ -302,26 +321,57 @@
         });
     </script>
 
-
     <script>
         function notificationClicked(notificationId) {
-            // Make an AJAX request to the server
+            // Make an AJAX request to mark the notification as opened
             $.ajax({
                 url: '/Notifications/MarkAsOpened',
                 type: 'POST',
-                data: { id: notificationId },
+                data: {
+                    id: notificationId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
                 success: function (response) {
-                    // Handle success response if needed
+                    // Handle success response
                     console.log("Notification marked as opened successfully!");
+
+                    // Change the UI to reflect the notification has been opened
+                    var notificationElement = $('#notification-' + notificationId);
+                    notificationElement.removeClass('notification-unopened').addClass('notification-opened');
                 },
                 error: function (xhr, status, error) {
-                    // Handle error response if needed
+                    // Handle error response
                     console.error(error);
                 }
             });
         }
 
+        function deleteNotification(notificationId) {
+            // Make an AJAX request to delete the notification
+            $.ajax({
+                url: '/Notifications/Delete/' + notificationId,
+                type: 'POST',
+                data: {
+                    id: notificationId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    // Handle success response
+                    console.log("Notification deleted successfully!");
+
+                    // Remove the notification from the UI
+                    $('#notification-' + notificationId).remove();
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                    console.error(error);
+                }
+            });
+        }
     </script>
+
+
+
 
 
 

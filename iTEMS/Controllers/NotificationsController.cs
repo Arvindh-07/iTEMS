@@ -199,5 +199,21 @@ namespace iTEMS.Controllers
             return RedirectToAction("Index"); // Redirect to wherever you want the user to go after opening the notification
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteNotification(int id)
+        {
+            var notification = await _context.Notifications.FindAsync(id);
+            if (notification == null || notification.UserName != User.Identity.Name)
+            {
+                return NotFound();
+            }
+
+            _context.Notifications.Remove(notification);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
     }
 }
