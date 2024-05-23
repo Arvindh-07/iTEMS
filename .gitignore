@@ -44,3 +44,7 @@
 *.cs
 *.cshtml
 >>>>>>> Latest-Most-Updated-Code
+/iTEMS/.config/dotnet-tools.json
+/iTEMS/bin/Debug/net8.0/appsettings.json
+/iTEMS/bin/Release/net8.0/af/Humanizer.resources.dll
+/iTEMS
