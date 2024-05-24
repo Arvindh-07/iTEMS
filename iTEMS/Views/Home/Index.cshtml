@@ -1,8 +1,208 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@page
+@{
+    Layout = null;
+    // ViewData["Title"] = "Index";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AdminLTE 3 | General Form Elements</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/AdminLTE/plugins/fontawesome-free/css/all.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="~/AdminLTE/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/AdminLTE/dist/css/adminlte.min.css">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            padding: 10px 20px;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+        }
+
+        .nav-item {
+            margin-left: 20px;
+        }
+
+        .carousel-inner img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100% - 70px); /* Adjust height to account for navbar */
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .slider-container img {
+            width: 100%;
+            display: block;
+        }
+
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .prev {
+            left: 10px;
+        }
+
+        .next {
+            right: 10px;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+            .carousel-indicators button {
+                border: none;
+                background-color: gray;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin: 5px;
+                cursor: pointer;
+            }
+
+            .carousel-indicators .active {
+                background-color: black;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="/Assets/Company Logo.png" alt="Logo" width="250" height="50">
+        </a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-primary text-white" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-secondary text-white" asp-area="Identity" asp-page="/Account/Register">Sign Up</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Container for the slider -->
+    <div class="slider-container">
+        <div class="slides">
+            <div class="slide">
+                <img src="/Assets/Project1.jpeg" width="1200" height="662" alt="Slide 1">
+            </div>
+            <div class="slide">
+                <img src="/Assets/Project2.jpg" width="1200" height="662" alt="Slide 2">
+            </div>
+            <div class="slide">
+                <img src="/Assets/Project3.jpg" width="1200" height="662" alt="Slide 3">
+            </div>
+            <div class="slide">
+                <img src="/Assets/Project4.jpg" width="1200" height="662" alt="Slide 4">
+            </div>
+            <div class="slide">
+                <img src="/Assets/Project5.jpg" width="1200" height="662" alt="Slide 5">
+            </div>
+        </div>
+        <button class="prev" onclick="moveSlide(-1)">❮</button>
+        <button class="next" onclick="moveSlide(1)">❯</button>
+    </div>
+
+    <div class="carousel-indicators">
+        <button class="active" onclick="currentSlide(1)"></button>
+        <button onclick="currentSlide(2)"></button>
+        <button onclick="currentSlide(3)"></button>
+        <button onclick="currentSlide(4)"></button>
+        <button onclick="currentSlide(5)"></button>
+    </div>
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelector('.slides');
+        const indicators = document.querySelectorAll('.carousel-indicators button');
+
+        function showSlides() {
+            const slidesCount = slides.children.length;
+            for (let i = 0; i < indicators.length; i++) {
+                indicators[i].classList.remove('active');
+            }
+            slideIndex++;
+            if (slideIndex > slidesCount) { slideIndex = 1 }
+            slides.style.transform = 'translateX(' + (-100 * (slideIndex - 1)) + '%)';
+            indicators[slideIndex - 1].classList.add('active');
+            setTimeout(showSlides, 3000); // Change slide every 3 seconds
+        }
+
+        function moveSlide(n) {
+            slideIndex += n;
+            if (slideIndex < 1) { slideIndex = slides.children.length }
+            if (slideIndex > slides.children.length) { slideIndex = 1 }
+            updateSlides();
+        }
+
+        function currentSlide(n) {
+            slideIndex = n;
+            updateSlides();
+        }
+
+        function updateSlides() {
+            for (let i = 0; i < indicators.length; i++) {
+                indicators[i].classList.remove('active');
+            }
+            slides.style.transform = 'translateX(' + (-100 * (slideIndex - 1)) + '%)';
+            indicators[slideIndex - 1].classList.add('active');
+        }
+
+        showSlides(); // Initial call to start the slider
+    </script>
+</body>
+</html>
+
