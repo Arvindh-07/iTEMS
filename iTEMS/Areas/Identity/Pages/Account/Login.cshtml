@@ -35,12 +35,18 @@
             height: 100%;
         }
 
+        /* .logo-company {
+            width:250px;
+            height:50px;
+        } */
+
         .card {
             max-width: 600px; /* Increase the max-width */
             width: 90%;
             padding: 10px;
             border-radius: 15px;
             background-color: white;
+            box-shadow: 0 4px 20px #dedede;
         }
 
         .card-header {
@@ -103,6 +109,12 @@
         <div class="card-header">
             <h3 class="card-title">Log In</h3>
         </div>
+
+        @*TODO*@
+        @* <center>
+            <img id="logo-company" src="/Assets/Company Logo.png" alt="Logo" width="250" height="50">
+        </center>  *@      
+
         <form class="form-horizontal" id="account" method="post">
 
             <div class="card-body">
@@ -142,6 +154,9 @@
                     </p>
                     <p>
                         <a id="">Don’t have an account? </a><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">SIGN UP</a>
+                    </p>
+                    <p>
+                        <a id="">Go to </a><a asp-page="./Lockout">HOME</a> 
                     </p>
                 </div>
             </div>
