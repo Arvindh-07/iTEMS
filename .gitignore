@@ -50,3 +50,4 @@
 /iTEMS
 /iTEMS/obj/Debug/net8.0/staticwebassets/msbuild.iTEMS.Microsoft.AspNetCore.StaticWebAssets.props
 /.gitignore
+/iTEMS/appsettings.json
