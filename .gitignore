@@ -48,3 +48,5 @@
 /iTEMS/bin/Debug/net8.0/appsettings.json
 /iTEMS/bin/Release/net8.0/af/Humanizer.resources.dll
 /iTEMS
+/iTEMS/obj/Debug/net8.0/staticwebassets/msbuild.iTEMS.Microsoft.AspNetCore.StaticWebAssets.props
+/.gitignore
