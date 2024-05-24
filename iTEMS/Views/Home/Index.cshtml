@@ -112,6 +112,57 @@
             .carousel-indicators .active {
                 background-color: black;
             }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            color: #555;
+        }
+
+            .footer .container {
+                text-align: center;
+                height: 100%;
+            }
+
+            .footer a {
+                color: #555;
+            }
+
+                .footer a:hover {
+                    color: #333;
+                }
+
+        .footer-about li {
+            line-height: 30px;
+            list-style: none;
+        }
+
+        /* .link-1 {
+            background: url("https: //innotechlabs.com.my/images/soc_1a.gif") left bottom no-repeat;
+        }
+
+        .link-2 {
+
+        }
+
+        .link-3 {
+            background: url("https://innotechlabs.com.my/images/soc_2a.gif") left bottom no-repeat;
+        }
+        
+        .link-4 {
+        
+        } */
+
+        .footer-widget ul {
+            width: 50%;
+            float: left;
+        }
+
+        .info-icons li {
+            list-style: none;
+            padding: 0;
+            background: url("https://innotechlabs.com.my/images/ul-2B.png") right 8px no-repeat;
+        }
     </style>
 </head>
 <body>
@@ -154,15 +205,86 @@
         </div>
         <button class="prev" onclick="moveSlide(-1)">❮</button>
         <button class="next" onclick="moveSlide(1)">❯</button>
+
+        <div class="carousel-indicators">
+            <button class="active" onclick="currentSlide(1)"></button>
+            <button onclick="currentSlide(2)"></button>
+            <button onclick="currentSlide(3)"></button>
+            <button onclick="currentSlide(4)"></button>
+            <button onclick="currentSlide(5)"></button>
+        </div>
     </div>
 
-    <div class="carousel-indicators">
-        <button class="active" onclick="currentSlide(1)"></button>
-        <button onclick="currentSlide(2)"></button>
-        <button onclick="currentSlide(3)"></button>
-        <button onclick="currentSlide(4)"></button>
-        <button onclick="currentSlide(5)"></button>
-    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-12">
+                    <div class="footer-about">
+                        <div class="about-logo">
+                            <a href="/Index"></a>
+                            <img src="~/Assets/Company Logo.png" />
+                        </div>
+
+                        <ul>
+                            <li>
+                                Address: Bandar Puchong Jaya, 47100 Puchong, Selangor
+                            </li>
+                            <li>
+                                Phone: +60 16-398 2262
+                            </li>
+                            <li>
+                                Email: info@innotechlabs.com.my
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
+                    <div class="footer-widget">
+                        <h5>Useful Links</h5>
+                        <ul class="info-icons">
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">About Our Products</a></li>
+                            <li><a href="#">Innostore</a></li>
+                            <li><a href="#">Products</a></li>
+                            <li><a href="#">Return & Refund</a></li>                            
+                        </ul>
+                        <ul class="info-icons">
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Payment Method</a></li>
+                            <li><a href="#">Our Project</a></li>
+                            <li><a href="#">Our Sitemap</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Testimonial</a></li>
+                        </ul>
+                    </div>                 
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <ul class="social-icons">
+                        <div class="link-1">
+                            <a href="https://facebook.com"><i class="fab fa-facebook"></i>   Facebook</a>
+                        </div>
+
+                        <div class="link-2">
+                            <a href="#"><i class="fab fa-instagram"></i>   Instagram</a>
+                        </div>
+
+                        <div class="link-3">
+                            <a href="https://www.twitter.com"><i class="fab fa-twitter"></i>   Twitter</a>
+                        </div>
+
+                        <div class="link-4">
+                            <a href="#"><i class="fab fa-tiktok"></i>   Tiktok</a>
+                        </div>
+                    </ul>
+                </div>
+                <div class="col-md-12">
+                    <p>&copy; 2024 Powered by InnotechLabs. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         let slideIndex = 0;
