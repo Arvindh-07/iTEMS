@@ -455,6 +455,10 @@ namespace iTEMS.Data.Migrations
                     b.Property<string>("EstimatedTime")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FilePaths")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
