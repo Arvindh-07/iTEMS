@@ -50,6 +50,9 @@ namespace iTEMS.Models
         [Display(Name = "Attachments")]
         public string? Attachments { get; set; }
 
+        [Display(Name = "File Paths")]
+        public List<string>? FilePaths { get; set; }
+
         [Display(Name = "Comments")]
         public string? Comments { get; set; }
 
