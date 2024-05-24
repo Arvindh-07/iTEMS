@@ -210,7 +210,7 @@ namespace iTEMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,AssignedTo,Status,Priority,DueDate,StartDate,EstimatedTime,ActualTime,Tags,Attachments,Comments,ProjectId,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] TaskTracker taskTracker)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,AssignedTo,Status,Priority,DueDate,StartDate,EstimatedTime,ActualTime,Tags,Attachments,Comments,ProjectId,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] TaskTracker taskTracker, List<IFormFile> files)
         {
             await SetNotificationsInViewBag();
             if (id != taskTracker.Id)
@@ -233,6 +233,36 @@ namespace iTEMS.Controllers
                     taskTracker.UpdateActualTime();
                 }
 
+                // Process file uploads
+                var uploadsDirectory = Path.Combine(_environment.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadsDirectory))
+                {
+                    Directory.CreateDirectory(uploadsDirectory);
+                }
+
+                if (files != null && files.Count > 0)
+                {
+                    taskTracker.FilePaths = new List<string>();
+
+                    foreach (var file in files)
+                    {
+                        if (file.Length > 0)
+                        {
+                            var fileName = Path.GetFileName(file.FileName);
+                            var filePath = Path.Combine(uploadsDirectory, fileName);
+
+                            // Save the file to the server
+                            using (var fileStream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+
+                            // Add the file path to the TaskTracker's FilePath list
+                            taskTracker.FilePaths.Add(filePath);
+                        }
+                    }
+                }
+
                 _context.Update(taskTracker);
                 await _context.SaveChangesAsync();
 
@@ -251,14 +281,12 @@ namespace iTEMS.Controllers
                     throw;
                 }
             }
-            // Handle other specific exceptions if needed
-
 
             // If ModelState is not valid, return to the Edit view with error messages
             ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Name", taskTracker.ProjectId);
             ViewData["AssignedTo"] = new SelectList(_context.Employees, "Id", "UserName", taskTracker.Employee);
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(TaskTrackerStatus)), taskTracker.Status);
-            ViewData["PriorityList"] = new SelectList(Enum.GetValues(typeof(TaskPriority)), taskTracker.Priority); // Add this line
+            ViewData["PriorityList"] = new SelectList(Enum.GetValues(typeof(TaskPriority)), taskTracker.Priority);
 
             // Find the first error in ModelState and add an error message indicating the unfilled field
             var firstError = ModelState.Values.FirstOrDefault(v => v.Errors.Any());
@@ -273,10 +301,10 @@ namespace iTEMS.Controllers
             }
 
             return View(taskTracker);
-
-
-
         }
+
+
+
 
         // GET: TaskTrackers/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - iTEMS</title>
+    <title>@ViewData["Title"]</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
@@ -33,14 +33,12 @@
             border-color: transparent;
         }
     </style>
-
 </head>
 <body class="hold-transition dark-mode sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__wobble" src="~/AdminLTE/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+            <img class="animation__wobble" src="~/assets/innotechlogo-circle.png" alt="AdminLTELogo" height="60" width="60">
         </div>
-
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-dark">
             <!-- Left navbar links -->
@@ -49,36 +47,10 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
-
-
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <!-- Navbar Search -->
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                        <i class="fas fa-search"></i>
-                    </a>
-                    <div class="navbar-search-block">
-                        <form class="form-inline">
-                            <div class="input-group input-group-sm">
-                                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                                <div class="input-group-append">
-                                    <button class="btn btn-navbar" type="submit">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </li>
-
-
-
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
+                   <a class="nav-link" data-toggle="dropdown" href="#" style="color: white;" onmouseover="this.style.backgroundColor='#000000';" onmouseout="this.style.backgroundColor='transparent';">
                         <i class="far fa-bell"></i>
                         @if (ViewBag.Notifications != null && ((List<Notification>)ViewBag.Notifications).Any(n => !n.IsOpened && n.UserName == User.Identity.Name))
                         {
@@ -115,28 +87,19 @@
                         }
                     </div>
                 </li>
-
-
-
-
-
-
                 @if (User.Identity?.IsAuthenticated ?? false)
                 {
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage Profile"><i class="fa-solid fa-id-card"></i></a>
-                    </li>
-                    <li>
-                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Account/Login", new { area = "" })" method="post">
-                            <button type="submit" class="nav-link btn btn-link text-dark" title="Logout"><i class="fa-solid fa-power-off"></i></button>
-                        </form>
-                    </li>
+                        <li>
+                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Account/Login", new { area = "" })" method="post">
+                                <button type="submit" class="nav-link btn btn-link text-dark" title="Logout" style="color: white;" onmouseover="this.style.backgroundColor='#000000';" onmouseout="this.style.backgroundColor='transparent';"><i class="fa-solid fa-power-off"></i></button>
+                            </form>
+                        </li>
                 }
         </nav>
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">             
+            <a href="~/Dashboard" class="brand-link">             
                 <img src="~/assets/innotech logo.jpeg" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">iTEMS</span>
             </a>
@@ -166,6 +129,7 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
+                             
                         <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
                             <i class="fa-solid fa-gauge"></i>
                             <p>
