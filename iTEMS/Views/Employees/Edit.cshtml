@@ -93,14 +93,13 @@
                 </div>
              </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-action="Index" title="Back to List" onmouseover="this.style.backgroundColor='#610707';" onmouseout="this.style.backgroundColor='';"><i class="fa-solid fa-arrow-left-long"></i></a>
+                <input type="submit" value="Save" class="btn btn-primary" onmouseover="this.style.backgroundColor='#024a73';" onmouseout="this.style.backgroundColor='';" />
             </div>
         </form>
 </div>
 
-<div>
-    <a class="btn btn-danger" asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
