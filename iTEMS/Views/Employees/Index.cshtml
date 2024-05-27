@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<iTEMS.Models.Employee>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Team Members";
 }
 
-<h1>Index</h1>
+<br />
+<br />
+<br />
 
-<div class="card-header" >
-    <h3 class="card-title">Employee List</h3>
-</div>
+<h2 style="font-family:Tahoma">Team Members</h2>
 <div class="card-body" style="display:none">
                 <p>
                     <a class="btn btn-primary" asp-action="Create">Add New Employee</a>
@@ -116,7 +116,7 @@
 
 <div class="card-body">
     <p>
-        <a class="btn btn-primary" asp-action="Create">Add New Employee</a>
+        <a class="btn btn-primary" asp-action="Create">Add A New Team Member</a>
     </p>
     <div class="row">
         @foreach (var item in Model)
@@ -130,30 +130,38 @@
                         <div class="row">
                             <div class="col-7">
                                 <h2 class="lead"><b>@Html.DisplayFor(modelItem => item.FullName)</b></h2>
-                                <p class="text-muted text-sm"><b>About: </b>@Html.DisplayFor(modelItem => item.Department) / @Html.DisplayFor(modelItem => item.Designation)</p>
-                                <p class="text-muted text-sm"><b>Email: </b>@Html.DisplayFor(modelItem => item.Email)
-                                <ul class="ml-4 mb-0 fa-ul text-muted">
-                                    <li class="small">
-                                        <span class="fa-li"><i class="fas fa-lg fa-building"></i></span>
-                                        <strong>Address:</strong>&nbsp; @Html.DisplayFor(modelItem => item.Address), @Html.DisplayFor(modelItem => item.Country)
-                                    </li>
-                                    <br />
-                                    <li class="small">
-                                        <span class="fa-li"><i class="fas fa-lg fa-phone"></i></span>
-                                        <strong>Phone:</strong>&nbsp; @Html.DisplayFor(modelItem => item.PhoneNumber)
-                                    </li>
-                                </ul>
                             </div>
-                            <div class="col-5 text-center">
-                                <img src="~/path/to/default-avatar.jpg" alt="user-avatar" class="img-circle img-fluid">
+                            <div class="col-5 text-center">                               
+                                <img src="~/assets/images.png" alt="user-avatar" class="img-circle img-fluid img-lg float-middle">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p class="text-muted text-sm">
+                                    <i class="fas fa-lg fa-envelope" title="Email"></i>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(modelItem => item.Email)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="text-muted text-sm">
+                                    <i class="fas fa-lg fa-building" title="Department"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.DisplayFor(modelItem => item.Department)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="text-muted text-sm">
+                                    <i class="fas fa-lg fa-phone" title="Phone Number"></i>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(modelItem => item.PhoneNumber)
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <div class="text-right">
-                            <a asp-action="Details" class="btn btn-sm btn-primary" title="View User Details"><i class="fas fa-user"></i> View Details</a>
-                            <a asp-action="Edit" class="btn btn-sm btn-warning" title="Edit User Details" asp-route-id="@item.Id"><i class="fa-solid fa-pen-to-square"></i></a>
-                            <a asp-action="Delete" class="btn btn-sm btn-danger" title="Delete User" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
+                            <a asp-action="Details" class="btn btn-sm btn-primary" asp-route-id="@item.Id" title="View Team Member Details"><i class="fas fa-user"></i> View Details</a>
+                            <a asp-action="Edit" class="btn btn-sm btn-warning" title="Edit Team Member Details" asp-route-id="@item.Id"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <a asp-action="Delete" class="btn btn-sm btn-danger" title="Delete Team Member" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
                         </div>
                     </div>
                 </div>
