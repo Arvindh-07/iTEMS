@@ -30,6 +30,14 @@ namespace iTEMS.Models
         public string? Update { get; set; }
         public string? Blocker { get; set; }
 
+        [Display(Name = "Total Spent So Far")]
+        public string? TotalSpent { get; set; }
+
+        [Display(Name = "Estimated Project Duration")]
+        public string? EstimatedDuration { get; set; }
+
+        [Display(Name = "Attachments")]
+        public List<string>? Attachments { get; set; }
 
         public ICollection<TaskTracker>? Tasks { get; set; }
     }

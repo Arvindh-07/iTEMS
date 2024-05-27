@@ -9,7 +9,7 @@
 <h4>Project</h4>
 <hr />
 <div class="row">
-    <form asp-action="Edit" class="col-md-12">
+        <form asp-action="Edit" asp-controller="Projects" class="col-md-12" method="post" enctype="multipart/form-data">
         <!-- Form wrapping both columns -->
         <div class="row">
             <div class="col-md-6">
@@ -62,6 +62,11 @@
                     <span asp-validation-for="Blocker" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+                    <label asp-for="Attachments" class="control-label">Upload New Files</label>
+                    <input type="file" name="files" multiple class="form-control-file" />
+                    <span asp-validation-for="Attachments" class="text-danger"></span>
+                </div>
+                <div class="form-group">
                     <label asp-for="CreatedBy" class="control-label" style="display: none;"></label>
                     <input asp-for="CreatedBy" class="form-control" style="display: none;" />
                     <span asp-validation-for="CreatedBy" class="text-danger"></span>
@@ -89,7 +94,13 @@
         </div>
     </form>
 </div>
-
+<form asp-action="UploadFiles" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="files">Select files:</label>
+        <input type="file" name="files" id="files" multiple />
+    </div>
+    <button type="submit" class="btn btn-primary">Upload Files</button>
+</form>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
