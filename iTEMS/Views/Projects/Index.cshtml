@@ -1,18 +1,14 @@
 ﻿@model IEnumerable<iTEMS.Models.Project>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Projects List";
 }
 
-<div class="card-header">
-    <h3 class="card-title">Projects List</h3>
-</div>
-
-<div class="card-body">
+<div class="card-body" style="display:none">
     <p>
         <a class="btn btn-primary" asp-action="Create">Create New Project</a>
     </p>
-    <table id="example1" class="table table-bordered table-striped">
+    <table @* id="example1" *@ class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>
@@ -109,3 +105,74 @@
             </tbody>
         </table>
 </div>
+
+
+
+
+<br />
+<br />
+<br />
+
+<div class="card-header">
+    <h3 style="font-family:Tahoma">Projects</h3>
+</div>
+
+<div class="card-body">
+    <p>
+        <a class="btn btn-primary" asp-action="Create">Create New Project</a>
+    </p>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal" style="font-family:Tahoma">@Html.DisplayFor(modelItem => item.Name)</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Person in Charge:</strong> @Html.DisplayFor(modelItem => item.PIC) <br />
+                            <strong>Latest Update:</strong> @Html.DisplayFor(modelItem => item.Update) <br />
+                            <strong>Update Date:</strong> @item.ModifiedOn.ToString("dd - MMMM - yyyy") <br />
+                            <strong>Status:</strong>
+                            @if (item.Status == ProjectStatus.Planning)
+                            {
+                                <span class="badge badge-info">@Html.DisplayFor(modelItem => item.Status)</span>
+                            }
+                            else if (item.Status == ProjectStatus.Completed)
+                            {
+                                <span class="badge badge-success">@Html.DisplayFor(modelItem => item.Status)</span>
+                            }
+                            else if (item.Status == ProjectStatus.Pending)
+                            {
+                                <span class="badge" style="background-color: #4b0082; color: white;">@Html.DisplayFor(modelItem => item.Status)</span>
+                            }
+                            else if (item.Status == ProjectStatus.Blocked)
+                            {
+                                <span class="badge badge-danger">@Html.DisplayFor(modelItem => item.Status)</span>
+                            }
+                            else if (item.Status == ProjectStatus.Delayed)
+                            {
+                                <span class="badge badge-warning">@Html.DisplayFor(modelItem => item.Status)</span>
+                            }
+                        </p>                        
+                    </div>
+                    <div class="card-footer d-flex justify-content-end">
+                        <div class="btn-group" style="align-items:center">
+                            <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id" title="View Project Details">
+                                <i class="fas fa-folder"></i>&nbsp;&nbsp;&nbsp;View Project Details
+                            </a>
+                            <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id" title="Update Project Details">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id" title="Delete Project">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

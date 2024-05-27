@@ -365,11 +365,11 @@
                         datasets: [{
                             label: 'Number of Tasks',
                             data: [
-            @projectTaskDetails.Tasks.Count(t => t.Status == "Planning"),
-            @projectTaskDetails.Tasks.Count(t => t.Status == "Pending"),
-            @projectTaskDetails.Tasks.Count(t => t.Status == "Delayed"),
-            @projectTaskDetails.Tasks.Count(t => t.Status == "Blocked"),
-            @projectTaskDetails.Tasks.Count(t => t.Status == "Completed")
+                                    @projectTaskDetails.Tasks.Count(t => t.Status == "Planning"),
+                                    @projectTaskDetails.Tasks.Count(t => t.Status == "Pending"),
+                                    @projectTaskDetails.Tasks.Count(t => t.Status == "Delayed"),
+                                    @projectTaskDetails.Tasks.Count(t => t.Status == "Blocked"),
+                                    @projectTaskDetails.Tasks.Count(t => t.Status == "Completed")
                                                     ],
                             backgroundColor: [
                                 'rgba(0, 128, 128, 1)',
