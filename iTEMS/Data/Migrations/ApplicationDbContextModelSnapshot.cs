@@ -369,6 +369,9 @@ namespace iTEMS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Attachments")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Blocker")
                         .HasColumnType("nvarchar(max)");
 
@@ -389,6 +392,9 @@ namespace iTEMS.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EstimatedDuration")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -408,6 +414,9 @@ namespace iTEMS.Data.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("TotalSpent")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Update")
                         .HasColumnType("nvarchar(max)");
@@ -456,7 +465,6 @@ namespace iTEMS.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FilePaths")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ModifiedBy")

@@ -9,6 +9,7 @@ using iTEMS.Data;
 using iTEMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using iTEMS.Data.Migrations;
 
 namespace iTEMS.Controllers
 {
@@ -17,11 +18,13 @@ namespace iTEMS.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IWebHostEnvironment _environment;
 
-        public ProjectsController(ApplicationDbContext context, UserManager<IdentityUser> userManager) : base(context)
+        public ProjectsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IWebHostEnvironment environment) : base(context)
         {
             _context = context;
             _userManager = userManager;
+            _environment = environment;
         }
 
         // GET: Projects
@@ -65,7 +68,7 @@ namespace iTEMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] Project project, List<IFormFile> files)
         {
             await SetNotificationsInViewBag();
             if (ModelState.IsValid)
@@ -78,10 +81,40 @@ namespace iTEMS.Controllers
                 {
 
                     var currentUser = await _userManager.GetUserAsync(User);
+                    var uploadsDirectory = Path.Combine(_environment.WebRootPath, "uploads"); // Assuming _environment is an injected IWebHostEnvironment
+                    if (!Directory.Exists(uploadsDirectory))
+                    {
+                        Directory.CreateDirectory(uploadsDirectory);
+                    }
                     project.CreatedBy = currentUser.UserName;
                     project.CreatedOn = DateTime.Now; // Set the creation date here
                     project.ModifiedBy = currentUser.UserName;
                     project.ModifiedOn = DateTime.Now;
+
+                    if (files != null && files.Count > 0)
+                    {
+                        project.Attachments = new List<string>();
+
+                        foreach (var file in files)
+                        {
+                            if (file.Length > 0)
+                            {
+                                var fileName = Path.GetFileName(file.FileName); // Corrected line
+                                var filePath = Path.Combine(uploadsDirectory, fileName);
+
+                                // Save the file to the server
+                                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    await file.CopyToAsync(fileStream);
+                                }
+
+                                // Add the file path to the TaskTracker's FilePath list
+                                project.Attachments.Add(filePath);
+                            }
+                        }
+
+                    }
+
                     _context.Add(project);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -130,7 +163,7 @@ namespace iTEMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] Project project, List<IFormFile> files)
         {
             await SetNotificationsInViewBag();
             if (id != project.Id)
@@ -149,6 +182,16 @@ namespace iTEMS.Controllers
 
                     // Set the ModifiedOn property to the current date and time
                     project.ModifiedOn = DateTime.Now;
+
+                    // Upload new files and preserve existing attachments
+                    var uploadedFilePaths = await UploadFiles(files);
+                    if (project.Attachments == null)
+                    {
+                        project.Attachments = new List<string>();
+                    }
+                    project.Attachments.AddRange(uploadedFilePaths);
+
+                    // Update the project
                     _context.Update(project);
                     await _context.SaveChangesAsync();
                 }
@@ -165,9 +208,12 @@ namespace iTEMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(ProjectStatus)), project.Status);
             return View(project);
         }
+
+
 
         // GET: Projects/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -208,5 +254,100 @@ namespace iTEMS.Controllers
         {
             return _context.Project.Any(e => e.Id == id);
         }
+
+        public async Task<IActionResult> DownloadFile(int id)
+        {
+            var project = await _context.Project.FindAsync(id);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var filePath = project.Attachments.FirstOrDefault();
+
+            if (filePath == null || !System.IO.File.Exists(filePath))
+            {
+                return NotFound();
+            }
+
+            var memoryStream = new MemoryStream();
+            using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memoryStream);
+            }
+
+            memoryStream.Position = 0;
+            var contentType = "application/octet-stream"; // Set the content type based on your file type
+            var fileName = Path.GetFileName(filePath);
+
+            return File(memoryStream, contentType, fileName);
+        }
+
+
+        private async Task<List<string>> UploadFiles(List<IFormFile> files)
+        {
+            var uploadedFilePaths = new List<string>();
+            var uploadsDirectory = Path.Combine(_environment.WebRootPath, "uploads");
+
+            if (!Directory.Exists(uploadsDirectory))
+            {
+                Directory.CreateDirectory(uploadsDirectory);
+            }
+
+            if (files != null && files.Count > 0)
+            {
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var fileName = Path.GetFileName(file.FileName);
+                        var filePath = Path.Combine(uploadsDirectory, fileName);
+
+                        // Save the file to the server
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        // Add the file path to the list of uploaded file paths
+                        uploadedFilePaths.Add(filePath);
+                    }
+                }
+            }
+
+            return uploadedFilePaths;
+        }
+
+        // POST: Projects/UploadFiles/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadFiles(int id, List<IFormFile> files)
+        {
+            if (id <= 0 || files == null || files.Count == 0)
+            {
+                return BadRequest();
+            }
+
+            var project = await _context.Project.FindAsync(id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var uploadedFilePaths = await UploadFiles(files);
+            if (project.Attachments == null)
+            {
+                project.Attachments = new List<string>();
+            }
+            project.Attachments.AddRange(uploadedFilePaths);
+
+            await _context.SaveChangesAsync();
+            TempData["UploadSuccess"] = "Files uploaded successfully!";
+
+            return RedirectToAction("Details", new { id = id });
+        }
+
+
     }
 }

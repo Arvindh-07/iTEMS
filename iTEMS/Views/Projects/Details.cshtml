@@ -1,4 +1,5 @@
-﻿@model iTEMS.Models.Project
+﻿@using System.IO
+@model iTEMS.Models.Project
 
 @{
     ViewData["Title"] = "Details";
@@ -6,7 +7,7 @@
 
 <h1>Details</h1>
 
-<div>
+<div style="display:none">
     <h4>Project</h4>
     <hr />
     <dl class="row">
@@ -88,9 +89,142 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ModifiedOn)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Attachments)
+        </dt>
+        <dd>
+            @if (Model.Attachments != null && Model.Attachments.Any())
+            {
+                foreach (var filePath in Model.Attachments)
+                {
+                    <a href="@Url.Action("DownloadFile", "Projects", new { id = Model.Id })" download="@System.IO.Path.GetFileName(filePath)">@System.IO.Path.GetFileName(filePath)</a>
+                    <br />
+                }
+            }
+            else
+            {
+                <span>No files uploaded</span>
+            }
+        </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+
+<div class="card-body" style="display: block;">
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
+            <div class="row">
+                <div class="col-12 col-sm-4">
+                    <div class="info-box bg-light">
+                        <div class="info-box-content">
+                            <span class="info-box-text text-center text-muted">Estimated budget</span>
+                            <span class="info-box-number text-center text-muted mb-0">@Model.Budget</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <div class="info-box bg-light">
+                        <div class="info-box-content">
+                            <span class="info-box-text text-center text-muted">Total amount spent</span>
+                            <span class="info-box-number text-center text-muted mb-0">2000</span> <!-- You need to replace this value -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <div class="info-box bg-light">
+                        <div class="info-box-content">
+                            <span class="info-box-text text-center text-muted">Estimated project duration</span>
+                            <span class="info-box-number text-center text-muted mb-0">@Model.</span> <!-- You need to replace this value -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h4>Recent Activity</h4>
+                    <!-- Add code to display recent activity using appropriate model properties -->
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
+            <h3 class="text-primary"><i class="fas fa-paint-brush"></i> AdminLTE v3</h3>
+            <p class="text-muted">@Model.Description</p> <!-- You need to replace this value -->
+            <br>
+            <div class="text-muted">
+                <p class="text-sm">Client Company
+                    <b class="d-block">@Model.</b> <!-- You need to replace this value -->
+                </p>
+                <p class="text-sm">Project Leader
+                    <b class="d-block">@Model.</b> <!-- You need to replace this value -->
+                </p>
+            </div>
+            <h5 class="mt-5 text-muted">Project files</h5>
+            <ul class="list-unstyled">
+                @if (Model.Attachments != null && Model.Attachments.Any())
+                {
+                    foreach (var filePath in Model.Attachments)
+                    {
+                        <li>
+                            <a href="@Url.Action("DownloadFile", "Projects", new { id = Model.Id })" download="@System.IO.Path.GetFileName(filePath)">@System.IO.Path.GetFileName(filePath)</a>                          
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li>
+                        <span>No files uploaded</span>
+                    </li>
+                }
+            </ul>
+            <div class="text-center mt-5 mb-3">
+                <form asp-action="UploadFiles" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="files">Select files:</label>
+                        <input type="file" name="files" id="files" multiple />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Files</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to show success toast
+    function showSuccessToast(message) {
+        // Create toast element
+        var toast = $('<div class="toast bg-success fade show" role="alert" aria-live="assertive" aria-atomic="true">' +
+            '<div class="toast-header">' +
+            '<strong class="mr-auto">Success</strong>' +
+            '<button data-dismiss="toast" type="button" class="ml-2 mb-1 close" aria-label="Close">' +
+            '<span aria-hidden="true">×</span>' +
+            '</button>' +
+            '</div>' +
+            '<div class="toast-body">' + message + '</div>' +
+            '</div>');
+
+        // Append toast to body
+        $('body').append(toast);
+
+        // Show toast
+        toast.toast('show');
+
+        // Remove toast after 3 seconds (adjust as needed)
+        setTimeout(function () {
+            toast.toast('dispose');
+        }, 3000);
+    }
+
+    // Check if the upload was successful
+    // Assuming you have a variable 'uploadSuccess' indicating success
+    // Adjust the condition and message as needed
+    var uploadSuccess = true; // Set to false if upload fails
+    if (uploadSuccess) {
+        showSuccessToast('Files uploaded successfully!');
+    }
+</script>
