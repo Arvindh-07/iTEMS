@@ -378,6 +378,9 @@ namespace iTEMS.Data.Migrations
                     b.Property<string>("Budget")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ClientName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 

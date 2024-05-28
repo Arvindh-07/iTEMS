@@ -39,8 +39,23 @@
                     <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
                     <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
+                <div class="form-group">
+                    <label asp-for="ClientName" class="control-label">Client Name</label>
+                    <input asp-for="ClientName" class="form-control"></input>
+                    <span asp-validation-for="ClientName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TotalSpent" class="control-label">Total Amount Spent</label>
+                    <input asp-for="TotalSpent" class="form-control"></input>
+                    <span asp-validation-for="TotalSpent" class="text-danger"></span>
+                </div>
             </div>
             <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="EstimatedDuration" class="control-label">Estimated Duration</label>
+                    <input asp-for="EstimatedDuration" class="form-control"></input>
+                    <span asp-validation-for="EstimatedDuration" class="text-danger"></span>
+                </div>
                 <div class="form-group">
                     <label asp-for="PIC" class="control-label">PIC</label>
                     <input asp-for="PIC" class="form-control" />
