@@ -44,6 +44,7 @@ namespace iTEMS.Controllers
             }
 
             var project = await _context.Project
+                .Include(p => p.Timelines) // Include the timeline entries
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (project == null)
             {
@@ -56,6 +57,7 @@ namespace iTEMS.Controllers
         // GET: Projects/Create
         public async Task<IActionResult> Create()
         {
+
             await SetNotificationsInViewBag();
             var currentUser = await _userManager.GetUserAsync(User);
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email == currentUser.UserName);
@@ -73,21 +75,20 @@ namespace iTEMS.Controllers
             await SetNotificationsInViewBag();
             if (ModelState.IsValid)
             {
-
-                // Set default status
                 project.Status = ProjectStatus.Planning;
+                project.Timelines = new List<iTEMS.Models.Timeline>(); // Initialize the Timelines list
 
                 try
                 {
-
                     var currentUser = await _userManager.GetUserAsync(User);
-                    var uploadsDirectory = Path.Combine(_environment.WebRootPath, "uploads"); // Assuming _environment is an injected IWebHostEnvironment
+                    var uploadsDirectory = Path.Combine(_environment.WebRootPath, "uploads");
                     if (!Directory.Exists(uploadsDirectory))
                     {
                         Directory.CreateDirectory(uploadsDirectory);
                     }
+
                     project.CreatedBy = currentUser.UserName;
-                    project.CreatedOn = DateTime.Now; // Set the creation date here
+                    project.CreatedOn = DateTime.Now;
                     project.ModifiedBy = currentUser.UserName;
                     project.ModifiedOn = DateTime.Now;
 
@@ -99,20 +100,17 @@ namespace iTEMS.Controllers
                         {
                             if (file.Length > 0)
                             {
-                                var fileName = Path.GetFileName(file.FileName); // Corrected line
+                                var fileName = Path.GetFileName(file.FileName);
                                 var filePath = Path.Combine(uploadsDirectory, fileName);
 
-                                // Save the file to the server
                                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                                 {
                                     await file.CopyToAsync(fileStream);
                                 }
 
-                                // Add the file path to the TaskTracker's FilePath list
                                 project.Attachments.Add(filePath);
                             }
                         }
-
                     }
 
                     _context.Add(project);
@@ -121,24 +119,15 @@ namespace iTEMS.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception or display an error message
                     ModelState.AddModelError("", "An error occurred while saving the project.");
                     return View(project);
-                }
-            }
-            else
-            {
-                // Get the validation errors
-                var errors = ModelState.Values.SelectMany(v => v.Errors);
-                foreach (var error in errors)
-                {
-                    ModelState.AddModelError("", error.ErrorMessage);
                 }
             }
 
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(ProjectStatus)), project.Status);
             return View(project);
         }
+
 
         // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -149,11 +138,15 @@ namespace iTEMS.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Project.FindAsync(id);
+            var project = await _context.Project
+                .Include(p => p.Timelines) // Include timelines
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (project == null)
             {
                 return NotFound();
             }
+
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(ProjectStatus)), project.Status);
             return View(project);
         }
@@ -163,7 +156,8 @@ namespace iTEMS.Controllers
         // POST: Projects/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn,EstimatedDuration,TotalSpent,ClientName")] Project project, List<IFormFile> files)
+
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn,EstimatedDuration,TotalSpent,ClientName,Timelines")] Project project, List<IFormFile> files)
         {
             await SetNotificationsInViewBag();
             if (id != project.Id)
@@ -177,8 +171,12 @@ namespace iTEMS.Controllers
                 {
                     var currentUser = await _userManager.GetUserAsync(User);
 
-                    // Load existing project from the database
-                    var existingProject = await _context.Project.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+                    // Load existing project from the database, including timelines
+                    var existingProject = await _context.Project
+                        .Include(p => p.Timelines)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(p => p.Id == id);
+
                     if (existingProject == null)
                     {
                         return NotFound();
@@ -186,6 +184,9 @@ namespace iTEMS.Controllers
 
                     // Preserve existing attachments
                     project.Attachments = existingProject.Attachments ?? new List<string>();
+
+                    // Preserve existing timelines
+                    project.Timelines = existingProject.Timelines ?? new List<iTEMS.Models.Timeline>();
 
                     // Handle file uploads
                     var uploadedFilePaths = await UploadFiles(files);
@@ -217,10 +218,22 @@ namespace iTEMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                // Log the validation errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError("", error.ErrorMessage);
+                }
+            }
 
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(ProjectStatus)), project.Status);
             return View(project);
         }
+
+
+
 
 
 
@@ -265,34 +278,34 @@ namespace iTEMS.Controllers
             return _context.Project.Any(e => e.Id == id);
         }
 
-public async Task<IActionResult> DownloadFile(int id, string fileName)
-{
-    var project = await _context.Project.FindAsync(id);
+        public async Task<IActionResult> DownloadFile(int id, string fileName)
+        {
+            var project = await _context.Project.FindAsync(id);
 
-    if (project == null)
-    {
-        return NotFound();
-    }
+            if (project == null)
+            {
+                return NotFound();
+            }
 
-    var filePath = project.Attachments?.FirstOrDefault(f => Path.GetFileName(f) == fileName);
+            var filePath = project.Attachments?.FirstOrDefault(f => Path.GetFileName(f) == fileName);
 
-    if (filePath == null || !System.IO.File.Exists(filePath))
-    {
-        return NotFound();
-    }
+            if (filePath == null || !System.IO.File.Exists(filePath))
+            {
+                return NotFound();
+            }
 
-    var memoryStream = new MemoryStream();
-    using (var stream = new FileStream(filePath, FileMode.Open))
-    {
-        await stream.CopyToAsync(memoryStream);
-    }
+            var memoryStream = new MemoryStream();
+            using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memoryStream);
+            }
 
-    memoryStream.Position = 0;
-    var contentType = "application/octet-stream"; // Set the content type based on your file type
-    var downloadFileName = Path.GetFileName(filePath);
+            memoryStream.Position = 0;
+            var contentType = "application/octet-stream"; // Set the content type based on your file type
+            var downloadFileName = Path.GetFileName(filePath);
 
-    return File(memoryStream, contentType, downloadFileName);
-}
+            return File(memoryStream, contentType, downloadFileName);
+        }
 
 
 
@@ -335,6 +348,7 @@ public async Task<IActionResult> DownloadFile(int id, string fileName)
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadFiles(int id, List<IFormFile> files)
         {
+
             if (id <= 0 || files == null || files.Count == 0)
             {
                 return BadRequest();
@@ -345,6 +359,27 @@ public async Task<IActionResult> DownloadFile(int id, string fileName)
             {
                 return NotFound();
             }
+
+            var currentUser = await _userManager.GetUserAsync(User); // Get the current logged-in user
+
+            foreach (var file in files)
+            {
+                var fileName = Path.GetFileName(file.FileName); // Get the file name
+                var timelineEntry = new iTEMS.Models.Timeline
+                {
+                    ProjectId = project.Id,
+                    Type = "File Uploaded",
+                    Description = $"{currentUser.UserName} uploaded file: {fileName}",
+                    FileName = fileName, // Set the file name here
+                    UserInvolved = currentUser.UserName, // Set the user involved here
+                    Timestamp = DateTime.Now
+                };
+
+                // Save the timeline entry to the database
+                _context.Timelines.Add(timelineEntry);
+            }
+
+            await _context.SaveChangesAsync();
 
             var uploadedFilePaths = await UploadFiles(files);
             if (project.Attachments == null)
@@ -358,6 +393,7 @@ public async Task<IActionResult> DownloadFile(int id, string fileName)
 
             return RedirectToAction("Details", new { id = id });
         }
+
 
 
     }
