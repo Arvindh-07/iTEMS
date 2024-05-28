@@ -7,167 +7,139 @@
 
 
 
-<div style="display:none">
-    <h4>Project</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PIC)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PIC)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Budget)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Budget)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Update)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Update)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Blocker)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Blocker)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedOn)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedOn)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedOn)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedOn)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Attachments)
-        </dt>
-        <dd>
-            @if (Model.Attachments != null && Model.Attachments.Any())
-            {
-                foreach (var filePath in Model.Attachments)
-                {
-                    <a href="@Url.Action("DownloadFile", "Projects", new { id = Model.Id })" download="@System.IO.Path.GetFileName(filePath)">@System.IO.Path.GetFileName(filePath)</a>
-                    <br />
-                }
-            }
-            else
-            {
-                <span>No files uploaded</span>
-            }
-        </dd>
-    </dl>
-</div>
+
 <br />
 <br />
 <br />
-<h3>Project Details</h3>
 <div class="card-body" style="display: block;">
+    <h3 style="font-family:Tahoma"><strong>Project Details</strong></h3>
+    <br />
     <div class="row">
         <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
             <div class="row">
-                <div class="col-12 col-sm-4">
-                    <div class="info-box bg-light">
+                <div class="col-12 col-sm-3">
+                    <div class="info-box bg-dark">
                         <div class="info-box-content">
-                            <span class="info-box-text text-center text-muted">Estimated budget</span>
+                            <span class="info-box-text text-center text-muted">Estimated Budget</span>
                             <span class="info-box-number text-center text-muted mb-0">@Model.Budget</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-sm-4">
-                    <div class="info-box bg-light">
+                <div class="col-12 col-sm-3">
+                    <div class="info-box bg-dark">
                         <div class="info-box-content">
-                            <span class="info-box-text text-center text-muted">Total amount spent</span>
+                            <span class="info-box-text text-center text-muted">Total Spent</span>
                             <span class="info-box-number text-center text-muted mb-0">@Model.TotalSpent</span> <!-- You need to replace this value -->
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-sm-4">
-                    <div class="info-box bg-light">
+                <div class="col-12 col-sm-3">
+                    <div class="info-box bg-dark">
                         <div class="info-box-content">
-                            <span class="info-box-text text-center text-muted">Estimated project duration</span>
+                            <span class="info-box-text text-center text-muted">Estimated Duration</span>
                             <span class="info-box-number text-center text-muted mb-0">@Model.EstimatedDuration</span> <!-- You need to replace this value -->
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <h4>Project Details</h4>
-                    <!-- Add code to display recent activity using appropriate model properties -->
+                <div class="col-12 col-sm-3">
+                    <div class="info-box bg-dark">
+                        <div class="info-box-content">
+                            <span class="info-box-text text-center text-muted">Status</span>
+                            <span class="info-box-number text-center text-muted mb-0">@Model.Status</span> <!-- You need to replace this value -->
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            @{
+                // Define page size for timelines and attachments
+                int timelinePageSize = 5; // Adjust this according to your needs
+                int attachmentPageSize = 5; // Adjust this according to your needs
+
+                // Calculate total number of pages for timelines and attachments
+                int totalTimelineItems = Model.Timelines.Count;
+                int totalAttachmentItems = Model.Attachments != null ? Model.Attachments.Count : 0;
+                int totalTimelinePages = (int)Math.Ceiling((double)totalTimelineItems / timelinePageSize);
+                int totalAttachmentPages = (int)Math.Ceiling((double)totalAttachmentItems / attachmentPageSize);
+
+                // Retrieve current page numbers from query string for timelines and attachments
+                int timelinePage = string.IsNullOrEmpty(Context.Request.Query["timelinePage"]) ? 1 : Convert.ToInt32(Context.Request.Query["timelinePage"]);
+                int attachmentPage = string.IsNullOrEmpty(Context.Request.Query["attachmentPage"]) ? 1 : Convert.ToInt32(Context.Request.Query["attachmentPage"]);
+
+                // Calculate starting and ending indices for timelines and attachments
+                int timelineStartIndex = (timelinePage - 1) * timelinePageSize;
+                int timelineEndIndex = Math.Min(timelineStartIndex + timelinePageSize - 1, totalTimelineItems - 1);
+                int attachmentStartIndex = (attachmentPage - 1) * attachmentPageSize;
+                int attachmentEndIndex = Math.Min(attachmentStartIndex + attachmentPageSize - 1, totalAttachmentItems - 1);
+            }
+
+            <div class="row">
+                <div class="col-12">
+                    <h3 style="font-family:Tahoma"><strong>Project Timeline</strong></h3>
+                    @for (int i = timelineStartIndex; i <= timelineEndIndex; i++)
+                    {
+                        var entry = Model.Timelines[i];
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="user-block">
+                                    <img class="img-circle img-bordered-sm" src="~/assets/profile_pic.png" alt="user image">
+                                    <span class="username">
+                                        <h4>@entry.UserInvolved</h4>
+                                    </span>
+                                    <span class="description">@entry.Timestamp.ToString("dd-MMMM-yyy HH:mm:ss")</span>
+                                </div>
+                                <p class="card-text">
+                                    @entry.UserInvolved has uploaded a file: <a href="@Url.Action("DownloadFile", "Projects", new { id = Model.Id, fileName = entry.FileName })">@entry.FileName</a>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+            @if (totalTimelinePages > 1)
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="pagination">
+                            @for (int i = 1; i <= totalTimelinePages; i++)
+                            {
+                                <li class="page-item @(i == timelinePage ? "active" : "")">
+                                    <a class="page-link" href="?timelinePage=@i">@i</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
         </div>
         <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-            <h3 class="text-primary"><i class="fa-solid fa-diagram-project"></i>&nbsp;&nbsp;@Model.Name</h3>
-            <p class="text-muted">@Model.Description</p> <!-- You need to replace this value -->
-            <br>
-            <div class="text-muted">
-                <p class="text-sm">Client Name
-                    <b class="d-block">@Model.ClientName</b> <!-- You need to replace this value -->
-                </p>
-                <p class="text-sm">Project Leader
-                    <b class="d-block">@Model.PIC</b> <!-- You need to replace this value -->
-                </p>
+            <div class="card" style="width: 100%; margin-bottom: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Project Name</h5>
+                    <h3 class="card-text" style="font-family: Tahoma;"><strong>@Model.Name</strong></h3>
+                    <hr>
+                    <h5 class="card-title text-muted">Description</h5>
+                    <p class="card-text"><strong>@Model.Description</strong></p>
+                    <hr>
+                    <h5 class="card-title text-muted">Client Name</h5>
+                    <p class="card-text"><strong>@Model.ClientName</strong></p>
+                    <hr>
+                    <h5 class="card-title text-muted">Project Leader</h5>
+                    <p class="card-text"><strong>@Model.PIC</strong></p>
+                </div>
             </div>
+
+
             <h5 class="mt-5 text-muted">Project files</h5>
             <ul class="list-unstyled">
-                @if (Model.Attachments != null && Model.Attachments.Any())
+                @if (totalAttachmentItems > 0)
                 {
-                    foreach (var filePath in Model.Attachments)
+                    for (int i = attachmentStartIndex; i <= attachmentEndIndex; i++)
                     {
                         <li>
-                            <a href="@Url.Action("DownloadFile", "Projects", new { id = Model.Id })" download="@System.IO.Path.GetFileName(filePath)">@System.IO.Path.GetFileName(filePath)</a>                          
+                            <a href="@Url.Action("DownloadFile", "Projects", new { id = Model.Id })" download="@System.IO.Path.GetFileName(Model.Attachments[i])">@System.IO.Path.GetFileName(Model.Attachments[i])</a>
                         </li>
                     }
                 }
@@ -178,6 +150,23 @@
                     </li>
                 }
             </ul>
+
+            @if (totalAttachmentPages > 1)
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="pagination">
+                            @for (int i = 1; i <= totalAttachmentPages; i++)
+                            {
+                                <li class="page-item @(i == attachmentPage ? "active" : "")">
+                                    <a class="page-link" href="?attachmentPage=@i">@i</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+
 @*             <div class="text-center mt-5 mb-3">
                 <form asp-action="UploadFiles" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
                     <div class="form-group">
