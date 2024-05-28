@@ -5,7 +5,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+
 
 <div style="display:none">
     <h4>Project</h4>
@@ -108,13 +108,10 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-
-
-
+<br />
+<br />
+<br />
+<h3>Project Details</h3>
 <div class="card-body" style="display: block;">
     <div class="row">
         <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
@@ -131,7 +128,7 @@
                     <div class="info-box bg-light">
                         <div class="info-box-content">
                             <span class="info-box-text text-center text-muted">Total amount spent</span>
-                            <span class="info-box-number text-center text-muted mb-0">2000</span> <!-- You need to replace this value -->
+                            <span class="info-box-number text-center text-muted mb-0">@Model.TotalSpent</span> <!-- You need to replace this value -->
                         </div>
                     </div>
                 </div>
@@ -139,28 +136,28 @@
                     <div class="info-box bg-light">
                         <div class="info-box-content">
                             <span class="info-box-text text-center text-muted">Estimated project duration</span>
-                            <span class="info-box-number text-center text-muted mb-0">@Model.</span> <!-- You need to replace this value -->
+                            <span class="info-box-number text-center text-muted mb-0">@Model.EstimatedDuration</span> <!-- You need to replace this value -->
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <h4>Recent Activity</h4>
+                    <h4>Project Details</h4>
                     <!-- Add code to display recent activity using appropriate model properties -->
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-            <h3 class="text-primary"><i class="fas fa-paint-brush"></i> AdminLTE v3</h3>
+            <h3 class="text-primary"><i class="fa-solid fa-diagram-project"></i>&nbsp;&nbsp;@Model.Name</h3>
             <p class="text-muted">@Model.Description</p> <!-- You need to replace this value -->
             <br>
             <div class="text-muted">
-                <p class="text-sm">Client Company
-                    <b class="d-block">@Model.</b> <!-- You need to replace this value -->
+                <p class="text-sm">Client Name
+                    <b class="d-block">@Model.ClientName</b> <!-- You need to replace this value -->
                 </p>
                 <p class="text-sm">Project Leader
-                    <b class="d-block">@Model.</b> <!-- You need to replace this value -->
+                    <b class="d-block">@Model.PIC</b> <!-- You need to replace this value -->
                 </p>
             </div>
             <h5 class="mt-5 text-muted">Project files</h5>
@@ -181,7 +178,7 @@
                     </li>
                 }
             </ul>
-            <div class="text-center mt-5 mb-3">
+@*             <div class="text-center mt-5 mb-3">
                 <form asp-action="UploadFiles" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="files">Select files:</label>
@@ -189,11 +186,14 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Upload Files</button>
                 </form>
-            </div>
+            </div> *@
         </div>
     </div>
 </div>
-
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
 <script>
     // Function to show success toast
     function showSuccessToast(message) {

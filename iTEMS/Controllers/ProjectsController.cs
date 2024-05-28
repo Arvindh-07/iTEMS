@@ -68,7 +68,7 @@ namespace iTEMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] Project project, List<IFormFile> files)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn,EstimatedDuration,TotalSpent,ClientName")] Project project, List<IFormFile> files)
         {
             await SetNotificationsInViewBag();
             if (ModelState.IsValid)
@@ -158,12 +158,12 @@ namespace iTEMS.Controllers
             return View(project);
         }
 
-        // POST: Projects/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Projects/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn")] Project project, List<IFormFile> files)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,Status,PIC,Budget,Update,Blocker,CreatedBy,CreatedOn,ModifiedBy,ModifiedOn,EstimatedDuration,TotalSpent,ClientName")] Project project, List<IFormFile> files)
         {
             await SetNotificationsInViewBag();
             if (id != project.Id)
@@ -177,19 +177,28 @@ namespace iTEMS.Controllers
                 {
                     var currentUser = await _userManager.GetUserAsync(User);
 
+                    // Load existing project from the database
+                    var existingProject = await _context.Project.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+                    if (existingProject == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Preserve existing attachments
+                    project.Attachments = existingProject.Attachments ?? new List<string>();
+
+                    // Handle file uploads
+                    var uploadedFilePaths = await UploadFiles(files);
+                    if (uploadedFilePaths.Count > 0)
+                    {
+                        project.Attachments.AddRange(uploadedFilePaths);
+                    }
+
                     // Assign the current user's username to the ModifiedBy property
                     project.ModifiedBy = currentUser.UserName;
 
                     // Set the ModifiedOn property to the current date and time
                     project.ModifiedOn = DateTime.Now;
-
-                    // Upload new files and preserve existing attachments
-                    var uploadedFilePaths = await UploadFiles(files);
-                    if (project.Attachments == null)
-                    {
-                        project.Attachments = new List<string>();
-                    }
-                    project.Attachments.AddRange(uploadedFilePaths);
 
                     // Update the project
                     _context.Update(project);
@@ -212,6 +221,7 @@ namespace iTEMS.Controllers
             ViewData["StatusList"] = new SelectList(Enum.GetValues(typeof(ProjectStatus)), project.Status);
             return View(project);
         }
+
 
 
 
@@ -255,34 +265,35 @@ namespace iTEMS.Controllers
             return _context.Project.Any(e => e.Id == id);
         }
 
-        public async Task<IActionResult> DownloadFile(int id)
-        {
-            var project = await _context.Project.FindAsync(id);
+public async Task<IActionResult> DownloadFile(int id, string fileName)
+{
+    var project = await _context.Project.FindAsync(id);
 
-            if (project == null)
-            {
-                return NotFound();
-            }
+    if (project == null)
+    {
+        return NotFound();
+    }
 
-            var filePath = project.Attachments.FirstOrDefault();
+    var filePath = project.Attachments?.FirstOrDefault(f => Path.GetFileName(f) == fileName);
 
-            if (filePath == null || !System.IO.File.Exists(filePath))
-            {
-                return NotFound();
-            }
+    if (filePath == null || !System.IO.File.Exists(filePath))
+    {
+        return NotFound();
+    }
 
-            var memoryStream = new MemoryStream();
-            using (var stream = new FileStream(filePath, FileMode.Open))
-            {
-                await stream.CopyToAsync(memoryStream);
-            }
+    var memoryStream = new MemoryStream();
+    using (var stream = new FileStream(filePath, FileMode.Open))
+    {
+        await stream.CopyToAsync(memoryStream);
+    }
 
-            memoryStream.Position = 0;
-            var contentType = "application/octet-stream"; // Set the content type based on your file type
-            var fileName = Path.GetFileName(filePath);
+    memoryStream.Position = 0;
+    var contentType = "application/octet-stream"; // Set the content type based on your file type
+    var downloadFileName = Path.GetFileName(filePath);
 
-            return File(memoryStream, contentType, fileName);
-        }
+    return File(memoryStream, contentType, downloadFileName);
+}
+
 
 
         private async Task<List<string>> UploadFiles(List<IFormFile> files)
