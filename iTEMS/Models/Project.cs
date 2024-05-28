@@ -30,6 +30,9 @@ namespace iTEMS.Models
         public string? Update { get; set; }
         public string? Blocker { get; set; }
 
+        [Display(Name = "Client Name")]
+        public string? ClientName { get; set; }
+
         [Display(Name = "Total Spent So Far")]
         public string? TotalSpent { get; set; }
 
@@ -50,4 +53,5 @@ namespace iTEMS.Models
         Delayed,
         Blocked
     }
+
 }

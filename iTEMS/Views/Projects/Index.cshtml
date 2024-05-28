@@ -155,22 +155,26 @@
                             {
                                 <span class="badge badge-warning">@Html.DisplayFor(modelItem => item.Status)</span>
                             }
-                            <td>
-                                @if (item.Attachments != null && item.Attachments.Any())
+                        </p>
+                        <p>
+                            <strong>Attachments:</strong>
+                            @if (item.Attachments != null && item.Attachments.Any())
+                            {
+                                foreach (var filePath in item.Attachments)
                                 {
-                                    foreach (var filePath in item.Attachments)
-                                    {
-                                        <a href="@Url.Action("DownloadFile", "Projects", new { id = item.Id })" download="@System.IO.Path.GetFileName(filePath)">@System.IO.Path.GetFileName(filePath)</a>
-                                        <br />
-                                    }
+                                    <a href="@Url.Action("DownloadFile", "Projects", new { id = item.Id, fileName = @System.IO.Path.GetFileName(filePath) })" download="@System.IO.Path.GetFileName(filePath)">
+                                        @System.IO.Path.GetFileName(filePath)
+                                    </a>
+                                    <br />
                                 }
-                                else
-                                {
-                                    <span>No files uploaded</span>
-                                }
-                            </td>
-                        </p>                        
+                            }
+                            else
+                            {
+                                <span>No files uploaded</span>
+                            }
+                        </p>
                     </div>
+
                     <div class="card-footer d-flex justify-content-end">
                         <div class="btn-group" style="align-items:center">
                             <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id" title="View Project Details">
