@@ -503,6 +503,43 @@ namespace iTEMS.Data.Migrations
                     b.ToTable("TaskTrackers");
                 });
 
+            modelBuilder.Entity("iTEMS.Models.Timeline", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserInvolved")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Timelines");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -584,9 +621,22 @@ namespace iTEMS.Data.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("iTEMS.Models.Timeline", b =>
+                {
+                    b.HasOne("iTEMS.Models.Project", "Project")
+                        .WithMany("Timelines")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("iTEMS.Models.Project", b =>
                 {
                     b.Navigation("Tasks");
+
+                    b.Navigation("Timelines");
                 });
 #pragma warning restore 612, 618
         }

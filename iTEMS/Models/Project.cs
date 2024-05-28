@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace iTEMS.Models
 {
@@ -43,6 +44,7 @@ namespace iTEMS.Models
         public List<string>? Attachments { get; set; }
 
         public ICollection<TaskTracker>? Tasks { get; set; }
+        public List<Timeline>? Timelines { get; set; }
     }
 
     public enum ProjectStatus

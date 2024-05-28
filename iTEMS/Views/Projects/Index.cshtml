@@ -130,48 +130,43 @@
                         <h4 class="my-0 font-weight-normal" style="font-family:Tahoma">@Html.DisplayFor(modelItem => item.Name)</h4>
                     </div>
                     <div class="card-body">
+                        <div class="ribbon-wrapper ribbon-lg">
+                            @if (item.Status == ProjectStatus.Planning)
+                            {
+                                <div class="ribbon bg-info">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </div>
+                            }
+                            else if (item.Status == ProjectStatus.Completed)
+                            {
+                                <div class="ribbon bg-success">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </div>
+                            }
+                            else if (item.Status == ProjectStatus.Pending)
+                            {
+                                <div class="ribbon" style="background-color: #4b0082; color: white;">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </div>
+                            }
+                            else if (item.Status == ProjectStatus.Blocked)
+                            {
+                                <div class="ribbon bg-danger">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </div>
+                            }
+                            else if (item.Status == ProjectStatus.Delayed)
+                            {
+                                <div class="ribbon bg-warning">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </div>
+                            }
+                            
+                        </div>
                         <p class="card-text">
                             <strong>Person in Charge:</strong> @Html.DisplayFor(modelItem => item.PIC) <br />
                             <strong>Latest Update:</strong> @Html.DisplayFor(modelItem => item.Update) <br />
                             <strong>Update Date:</strong> @item.ModifiedOn.ToString("dd - MMMM - yyyy") <br />
-                            <strong>Status:</strong>
-                            @if (item.Status == ProjectStatus.Planning)
-                            {
-                                <span class="badge badge-info">@Html.DisplayFor(modelItem => item.Status)</span>
-                            }
-                            else if (item.Status == ProjectStatus.Completed)
-                            {
-                                <span class="badge badge-success">@Html.DisplayFor(modelItem => item.Status)</span>
-                            }
-                            else if (item.Status == ProjectStatus.Pending)
-                            {
-                                <span class="badge" style="background-color: #4b0082; color: white;">@Html.DisplayFor(modelItem => item.Status)</span>
-                            }
-                            else if (item.Status == ProjectStatus.Blocked)
-                            {
-                                <span class="badge badge-danger">@Html.DisplayFor(modelItem => item.Status)</span>
-                            }
-                            else if (item.Status == ProjectStatus.Delayed)
-                            {
-                                <span class="badge badge-warning">@Html.DisplayFor(modelItem => item.Status)</span>
-                            }
-                        </p>
-                        <p>
-                            <strong>Attachments:</strong>
-                            @if (item.Attachments != null && item.Attachments.Any())
-                            {
-                                foreach (var filePath in item.Attachments)
-                                {
-                                    <a href="@Url.Action("DownloadFile", "Projects", new { id = item.Id, fileName = @System.IO.Path.GetFileName(filePath) })" download="@System.IO.Path.GetFileName(filePath)">
-                                        @System.IO.Path.GetFileName(filePath)
-                                    </a>
-                                    <br />
-                                }
-                            }
-                            else
-                            {
-                                <span>No files uploaded</span>
-                            }
                         </p>
                     </div>
 

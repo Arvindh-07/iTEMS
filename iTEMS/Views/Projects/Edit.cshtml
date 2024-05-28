@@ -3,6 +3,20 @@
 @{
     ViewData["Title"] = "Edit";
 }
+<style>
+    .remove-button {
+        margin-left: 10px;
+        background: none;
+        border: none;
+        color: red;
+        font-size: 1.2em;
+        cursor: pointer;
+    }
+
+        .remove-button:hover {
+            color: darkred;
+        }
+</style>
 
 <h1>Edit</h1>
 
@@ -77,9 +91,8 @@
                     <span asp-validation-for="Blocker" class="text-danger"></span>
                 </div>
                 @* <div class="form-group">
-                    <label asp-for="Attachments" class="control-label">Upload New Files</label>
-                    <input type="file" name="files" multiple class="form-control-file" />
-                    <span asp-validation-for="Attachments" class="text-danger"></span>
+                    <label for="files">Upload New Files:</label>
+                    <input type="file" name="files" id="files" multiple class="form-control-file" />
                 </div> *@
                 <div class="form-group">
                     <label asp-for="CreatedBy" class="control-label" style="display: none;"></label>
@@ -109,13 +122,18 @@
         </div>
     </form>
 </div>
+
 <form asp-action="UploadFiles" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
     <div class="form-group">
-        <label for="files">Select files:</label>
-        <input type="file" name="files" id="files" multiple />
+        <label for="fileInput">Select files:</label>
+        <input type="file" id="fileInput" name="files" multiple />
     </div>
+    <ul id="fileList"></ul>
     <button type="submit" class="btn btn-primary">Upload Files</button>
 </form>
+
+
+
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
@@ -125,3 +143,50 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        let files = [];
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleFileSelect(event) {
+            const selectedFiles = Array.from(event.target.files);
+            console.log('Files selected:', selectedFiles); // Debug log
+            files = files.concat(selectedFiles);
+            updateFileList();
+        }
+
+        function updateFileList() {
+            console.log('Updating file list:', files); // Debug log
+            fileList.innerHTML = '';
+            files.forEach((file, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = file.name;
+                const removeButton = document.createElement('button');
+                removeButton.innerHTML = '&times;'; // X button
+                removeButton.type = 'button';
+                removeButton.classList.add('remove-button'); // Optional: Add a class for styling
+                removeButton.addEventListener('click', () => {
+                    files.splice(index, 1);
+                    updateFileList();
+                });
+                listItem.appendChild(removeButton);
+                fileList.appendChild(listItem);
+            });
+        }
+
+        document.querySelector('form').addEventListener('submit', function (event) {
+            const dataTransfer = new DataTransfer();
+            files.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+            console.log('Submitting form with files:', dataTransfer.files); // Debug log
+        });
+    });
+</script>
+
+
+
+
