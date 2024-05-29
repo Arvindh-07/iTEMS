@@ -182,6 +182,38 @@ namespace iTEMS.Controllers
                         return NotFound();
                     }
 
+                    if (existingProject.Update != project.Update)
+                    {
+                        // Create a new timeline entry
+                        var timelineEntry = new iTEMS.Models.Timeline
+                        {
+                            ProjectId = project.Id,
+                            Type = "Update Posted",
+                            Description = $"{currentUser.UserName} posted an update: {project.Update}",
+                            UserInvolved = currentUser.UserName,
+                            Timestamp = DateTime.Now
+                        };
+
+                        // Add the new timeline entry to the database
+                        _context.Timelines.Add(timelineEntry);
+                    }
+
+                    if (existingProject.Status != project.Status)
+                    {
+                        var statusChangeEntry = new iTEMS.Models.Timeline
+                        {
+                            ProjectId = project.Id,
+                            Type = "Status Change",
+                            Description = $"{currentUser.UserName} changed the status to: {project.Status}",
+                            UserInvolved = currentUser.UserName,
+                            Timestamp = DateTime.Now
+                        };
+
+                        // Add the status change entry to the database
+                        _context.Timelines.Add(statusChangeEntry);
+                    }
+
+
                     // Preserve existing attachments
                     project.Attachments = existingProject.Attachments ?? new List<string>();
 

@@ -72,7 +72,6 @@
                 int attachmentStartIndex = (attachmentPage - 1) * attachmentPageSize;
                 int attachmentEndIndex = Math.Min(attachmentStartIndex + attachmentPageSize - 1, totalAttachmentItems - 1);
             }
-
             <div class="row">
                 <div class="col-12">
                     <h3 style="font-family:Tahoma"><strong>Project Timeline</strong></h3>
@@ -86,16 +85,31 @@
                                     <span class="username">
                                         <h4>@entry.UserInvolved</h4>
                                     </span>
-                                    <span class="description">@entry.Timestamp.ToString("dd-MMMM-yyy HH:mm:ss")</span>
+                                    <span class="description">@entry.Timestamp.ToString("dd-MMMM-yyyy HH:mm:ss")</span>
                                 </div>
                                 <p class="card-text">
-                                    @entry.UserInvolved has uploaded a file: <a href="@Url.Action("DownloadFile", "Projects", new { id = Model.Id, fileName = entry.FileName })">@entry.FileName</a>
+                                    @switch (entry.Type)
+                                    {
+                                        case "File Uploaded":
+                                            <text>@entry.UserInvolved has uploaded a file: <a href="@Url.Action("DownloadFile", "Projects", new { id = Model.Id, fileName = entry.FileName })">@entry.FileName</a></text>
+                                            break;
+                                        case "Update Posted":
+                                            <text>@entry.UserInvolved posted an update: @entry.Description</text>
+                                            break;
+                                        case "Status Change":
+                                            <text>Status changed to: @entry.Description</text>
+                                            break;
+                                        default:
+                                            <text>@entry.Description</text>
+                                            break;
+                                    }
                                 </p>
                             </div>
                         </div>
                     }
                 </div>
             </div>
+
 
 
             @if (totalTimelinePages > 1)
