@@ -99,6 +99,18 @@
                 </div> *@
             </div>
 
+            <div class="card border-only mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Post an Update</h5>
+                    <form asp-action="PostUpdate" asp-route-id="@Model.Id" method="post">
+                        <div class="form-group">
+                            <label for="Update"></label>
+                            <input type="text" id="Update" name="Update" class="form-control" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Post Update</button>
+                    </form>
+                </div>
+            </div>
             @{
                 // Define page size for timelines and attachments
                 int timelinePageSize = 5; // Adjust this according to your needs

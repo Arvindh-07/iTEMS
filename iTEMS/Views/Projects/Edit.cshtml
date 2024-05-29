@@ -3,6 +3,37 @@
 @{
     ViewData["Title"] = "Edit";
 }
+
+<style>
+    .card.border-only {
+        border: 1px solid #ddd; /* Customize border color as needed */
+        border-radius: 4px; /* Customize border radius as needed */
+    }
+
+        .card.border-only .card-body {
+            padding: 15px; /* Customize padding as needed */
+        }
+
+    .custom-file-label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .custom-file-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 4px;
+    }
+
+        .custom-file-button:hover {
+            background-color: #0056b3;
+        }
+</style>
+
 <style>
     .remove-button {
         margin-left: 10px;
@@ -115,78 +146,104 @@
                     <input asp-for="ModifiedOn" class="form-control" style="display: none;" />
                     <span asp-validation-for="ModifiedOn" class="text-danger"></span>
                 </div>
-                <div class="form-group col-md-12">
-                    <!-- Full width submit button -->
-                    <input type="submit" value="Save" class="btn btn-primary" />
-                </div>
             </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" onmouseover="this.style.backgroundColor='#024a73';" onmouseout="this.style.backgroundColor='';" />
         </div>
     </form>
 </div>
 
-<form asp-action="UploadFiles" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="fileInput">Select files:</label>
-        <input type="file" id="fileInput" name="files" multiple />
+<div class="card border-only">
+    <div class="card-body">
+        <p><strong>Upload Addtional Files</strong></p>
+        <small>Files uploaded here here will be added once "Upload Files" button is pressed without needing to press "Save"</small>
+        <hr />
+        <form asp-action="UploadFiles" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="fileInput">Select files:</label>
+                <input type="file" id="fileInput" name="files" multiple style="display:none"/>
+                <button type="button" id="customFileButton" class="btn btn-primary">Choose Files</button>
+            </div>
+            <ul id="fileList"></ul>
+            <button type="submit" class="btn btn-primary">Upload Files</button>
+        </form>
     </div>
-    <ul id="fileList"></ul>
-    <button type="submit" class="btn btn-primary">Upload Files</button>
-</form>
-
+</div>
 
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-outline-info" asp-action="Index" title="Back to List" onmouseover="this.style.backgroundColor='#007bff';" onmouseout="this.style.backgroundColor='';"><i class="fa-solid fa-arrow-left-long"></i></a>
 </div>
+
+
+
+
+
+
+
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const fileInput = document.getElementById('fileInput');
+            const fileList = document.getElementById('fileList');
+            const customFileButton = document.getElementById('customFileButton');
+            let files = [];
+
+            customFileButton.addEventListener('click', function () {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', handleFileSelect);
+
+            function handleFileSelect(event) {
+                const selectedFiles = Array.from(event.target.files);
+                console.log('Files selected:', selectedFiles); // Debug log
+                files = files.concat(selectedFiles);
+                updateFileList();
+            }
+
+            function updateFileList() {
+                fileList.innerHTML = '';
+                files.forEach((file, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = file.name;
+                    const removeButton = document.createElement('button');
+                    removeButton.innerHTML = '&times;'; // X button
+                    removeButton.type = 'button';
+                    removeButton.classList.add('remove-button'); // Optional: Add a class for styling
+                    removeButton.addEventListener('click', () => {
+                        files.splice(index, 1);
+                        updateFileInput();
+                        updateFileList();
+                    });
+                    listItem.appendChild(removeButton);
+                    fileList.appendChild(listItem);
+                });
+            }
+
+            function updateFileInput() {
+                const dataTransfer = new DataTransfer();
+                files.forEach(file => dataTransfer.items.add(file));
+                fileInput.files = dataTransfer.files;
+                console.log('Updated file input:', fileInput.files); // Debug log
+            }
+
+            document.querySelector('form').addEventListener('submit', function (event) {
+                updateFileInput();
+                console.log('Submitting form with files:', fileInput.files); // Debug log
+            });
+        });
+    </script>
 }
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const fileInput = document.getElementById('fileInput');
-        const fileList = document.getElementById('fileList');
-        let files = [];
 
-        fileInput.addEventListener('change', handleFileSelect);
-
-        function handleFileSelect(event) {
-            const selectedFiles = Array.from(event.target.files);
-            console.log('Files selected:', selectedFiles); // Debug log
-            files = files.concat(selectedFiles);
-            updateFileList();
-        }
-
-        function updateFileList() {
-            console.log('Updating file list:', files); // Debug log
-            fileList.innerHTML = '';
-            files.forEach((file, index) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = file.name;
-                const removeButton = document.createElement('button');
-                removeButton.innerHTML = '&times;'; // X button
-                removeButton.type = 'button';
-                removeButton.classList.add('remove-button'); // Optional: Add a class for styling
-                removeButton.addEventListener('click', () => {
-                    files.splice(index, 1);
-                    updateFileList();
-                });
-                listItem.appendChild(removeButton);
-                fileList.appendChild(listItem);
-            });
-        }
-
-        document.querySelector('form').addEventListener('submit', function (event) {
-            const dataTransfer = new DataTransfer();
-            files.forEach(file => dataTransfer.items.add(file));
-            fileInput.files = dataTransfer.files;
-            console.log('Submitting form with files:', dataTransfer.files); // Debug log
-        });
-    });
-</script>
 
 
 
