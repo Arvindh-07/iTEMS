@@ -35,17 +35,12 @@ namespace iTEMS.Controllers
         }
 
         // GET: Projects/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            await SetNotificationsInViewBag();
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var project = await _context.Project
-                .Include(p => p.Timelines) // Include the timeline entries
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(p => p.Timelines)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (project == null)
             {
                 return NotFound();
@@ -189,7 +184,23 @@ namespace iTEMS.Controllers
                         {
                             ProjectId = project.Id,
                             Type = "Update Posted",
-                            Description = $"{currentUser.UserName} posted an update: {project.Update}",
+                            Description = $"Project Update: {project.Update}",
+                            UserInvolved = currentUser.UserName,
+                            Timestamp = DateTime.Now
+                        };
+
+                        // Add the new timeline entry to the database
+                        _context.Timelines.Add(timelineEntry);
+                    }
+
+                    if (existingProject.Blocker != project.Blocker)
+                    {
+                        // Create a new timeline entry
+                        var timelineEntry = new iTEMS.Models.Timeline
+                        {
+                            ProjectId = project.Id,
+                            Type = "Update Posted",
+                            Description = $"Project Blocker Update: {project.Blocker}",
                             UserInvolved = currentUser.UserName,
                             Timestamp = DateTime.Now
                         };
@@ -204,7 +215,7 @@ namespace iTEMS.Controllers
                         {
                             ProjectId = project.Id,
                             Type = "Status Change",
-                            Description = $"{currentUser.UserName} changed the status to: {project.Status}",
+                            Description = $"Project Status Update: {project.Status}",
                             UserInvolved = currentUser.UserName,
                             Timestamp = DateTime.Now
                         };
@@ -380,50 +391,130 @@ namespace iTEMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadFiles(int id, List<IFormFile> files)
         {
-
             if (id <= 0 || files == null || files.Count == 0)
             {
-                return BadRequest();
+                return BadRequest("Invalid project ID or no files selected.");
             }
 
             var project = await _context.Project.FindAsync(id);
             if (project == null)
             {
-                return NotFound();
+                return NotFound("Project not found.");
             }
 
             var currentUser = await _userManager.GetUserAsync(User); // Get the current logged-in user
 
-            foreach (var file in files)
+            try
             {
-                var fileName = Path.GetFileName(file.FileName); // Get the file name
-                var timelineEntry = new iTEMS.Models.Timeline
+                foreach (var file in files)
                 {
-                    ProjectId = project.Id,
-                    Type = "File Uploaded",
-                    Description = $"{currentUser.UserName} uploaded file: {fileName}",
-                    FileName = fileName, // Set the file name here
-                    UserInvolved = currentUser.UserName, // Set the user involved here
-                    Timestamp = DateTime.Now
-                };
+                    var fileName = Path.GetFileName(file.FileName); // Get the file name
+                    var timelineEntry = new iTEMS.Models.Timeline
+                    {
+                        ProjectId = project.Id,
+                        Type = "File Uploaded",
+                        Description = $"{currentUser.UserName} uploaded file: {fileName}",
+                        FileName = fileName, // Set the file name here
+                        UserInvolved = currentUser.UserName, // Set the user involved here
+                        Timestamp = DateTime.Now
+                    };
 
-                // Save the timeline entry to the database
-                _context.Timelines.Add(timelineEntry);
+                    // Save the timeline entry to the database
+                    _context.Timelines.Add(timelineEntry);
+                }
+
+                await _context.SaveChangesAsync(); // Save all changes to the database
+
+                var uploadedFilePaths = await UploadFilesToServer(files); // Assuming you have a method for handling file uploads
+                if (project.Attachments == null)
+                {
+                    project.Attachments = new List<string>();
+                }
+                project.Attachments.AddRange(uploadedFilePaths);
+
+                await _context.SaveChangesAsync();
+                TempData["UploadSuccess"] = "Files uploaded successfully!";
             }
-
-            await _context.SaveChangesAsync();
-
-            var uploadedFilePaths = await UploadFiles(files);
-            if (project.Attachments == null)
+            catch (Exception ex)
             {
-                project.Attachments = new List<string>();
+                // Log the exception for debugging
+                Console.WriteLine($"Error: {ex.Message}");
+                ModelState.AddModelError("", "An error occurred while uploading files.");
             }
-            project.Attachments.AddRange(uploadedFilePaths);
-
-            await _context.SaveChangesAsync();
-            TempData["UploadSuccess"] = "Files uploaded successfully!";
 
             return RedirectToAction("Details", new { id = id });
+        }
+
+        private async Task<List<string>> UploadFilesToServer(List<IFormFile> files)
+        {
+            var uploadedFilePaths = new List<string>();
+            var uploadsDirectory = Path.Combine(_environment.WebRootPath, "uploads");
+
+            if (!Directory.Exists(uploadsDirectory))
+            {
+                Directory.CreateDirectory(uploadsDirectory);
+            }
+
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    var fileName = Path.GetFileName(file.FileName);
+                    var filePath = Path.Combine(uploadsDirectory, fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+
+                    uploadedFilePaths.Add(filePath);
+                }
+            }
+
+            return uploadedFilePaths;
+        }
+
+
+
+
+
+        // GET: Projects/DeleteTimelineEntry/5
+        public async Task<IActionResult> DeleteTimelineEntry(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var timelineEntry = await _context.Timelines
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (timelineEntry == null)
+            {
+                return NotFound();
+            }
+
+            // You can skip the confirmation view and directly ask for confirmation using JavaScript in the UI.
+            return RedirectToAction(nameof(Index)); // Remove this line if you're handling the confirmation directly.
+        }
+
+        // POST: Projects/DeleteTimelineEntry/5
+        // POST: Projects/DeleteTimelineEntry/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteTimelineEntryConfirmed(int id)
+        {
+            var timelineEntry = await _context.Timelines.FindAsync(id);
+            if (timelineEntry != null)
+            {
+                var projectId = timelineEntry.ProjectId; // Get the associated ProjectId
+                _context.Timelines.Remove(timelineEntry);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Timeline entry deleted successfully.";
+
+                // Redirect to the Project Details page
+                return RedirectToAction("Details", "Projects", new { id = projectId });
+            }
+            return RedirectToAction(nameof(Index)); // If not found, redirect to Index or handle appropriately
         }
 
 
