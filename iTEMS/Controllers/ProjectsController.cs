@@ -275,6 +275,37 @@ namespace iTEMS.Controllers
             return View(project);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostUpdate(int id, string update)
+        {
+            if (string.IsNullOrWhiteSpace(update))
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
+            var project = await _context.Project.FindAsync(id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            var timelineEntry = new iTEMS.Models.Timeline
+            {
+                ProjectId = project.Id,
+                Type = "Update Posted",
+                Description = update,
+                UserInvolved = currentUser.UserName,
+                Timestamp = DateTime.Now
+            };
+
+            _context.Timelines.Add(timelineEntry);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id });
+        }
 
 
 
