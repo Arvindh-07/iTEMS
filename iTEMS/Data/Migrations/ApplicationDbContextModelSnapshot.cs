@@ -224,6 +224,75 @@ namespace iTEMS.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("iTEMS.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EditedTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileNameComment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePathComment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsEdited")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("TimelineId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TimelineId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("iTEMS.Models.CommentFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("CommentFiles");
+                });
+
             modelBuilder.Entity("iTEMS.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
@@ -587,6 +656,24 @@ namespace iTEMS.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("iTEMS.Models.Comment", b =>
+                {
+                    b.HasOne("iTEMS.Models.Timeline", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("TimelineId");
+                });
+
+            modelBuilder.Entity("iTEMS.Models.CommentFile", b =>
+                {
+                    b.HasOne("iTEMS.Models.Comment", "Comment")
+                        .WithMany("CommentFiles")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+                });
+
             modelBuilder.Entity("iTEMS.Models.Notification", b =>
                 {
                     b.HasOne("iTEMS.Models.Employee", "Employee")
@@ -628,11 +715,21 @@ namespace iTEMS.Data.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("iTEMS.Models.Comment", b =>
+                {
+                    b.Navigation("CommentFiles");
+                });
+
             modelBuilder.Entity("iTEMS.Models.Project", b =>
                 {
                     b.Navigation("Tasks");
 
                     b.Navigation("Timelines");
+                });
+
+            modelBuilder.Entity("iTEMS.Models.Timeline", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

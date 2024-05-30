@@ -38,13 +38,18 @@ namespace iTEMS.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var project = await _context.Project
-                .Include(p => p.Timelines)
-                .FirstOrDefaultAsync(p => p.Id == id);
+        .Include(p => p.Timelines)
+            .ThenInclude(t => t.Comments)
+                .ThenInclude(c => c.CommentFiles)
+        .FirstOrDefaultAsync(p => p.Id == id);
 
             if (project == null)
             {
                 return NotFound();
             }
+
+            ViewData["TotalComments"] = project.Timelines.SelectMany(t => t.Comments).Count();
+            ViewData["CommentBatchSize"] = 5;
 
             return View(project);
         }
@@ -547,6 +552,114 @@ namespace iTEMS.Controllers
             }
             return RedirectToAction(nameof(Index)); // If not found, redirect to Index or handle appropriately
         }
+
+        [HttpPost]
+        public async Task<IActionResult> PostComment(int id, string comment, List<IFormFile> files)
+        {
+            var timelineEntry = await _context.Timelines.Include(t => t.Comments).ThenInclude(c => c.CommentFiles).FirstOrDefaultAsync(t => t.Id == id);
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (timelineEntry != null && currentUser != null)
+            {
+                var newComment = new Comment
+                {
+                    User = currentUser.UserName,
+                    Content = comment,
+                    Timestamp = DateTime.Now
+                };
+
+                if (files != null && files.Count > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/comments");
+                    Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
+
+                    foreach (var file in files)
+                    {
+                        if (file.Length > 0)
+                        {
+                            var fileName = Path.GetFileName(file.FileName);
+                            var filePath = Path.Combine(uploadsFolder, fileName);
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                            var commentFile = new CommentFile
+                            {
+                                FilePath = $"uploads/comments/{fileName}",
+                                FileName = fileName
+                            };
+                            newComment.CommentFiles.Add(commentFile);
+                        }
+                    }
+                }
+
+                timelineEntry.Comments.Add(newComment);
+                _context.Update(timelineEntry);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Details", new { id = timelineEntry.ProjectId });
+            }
+
+            return NotFound();
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditComment(int commentId, string comment)
+        {
+            var timelineEntry = await _context.Timelines
+                                              .Include(t => t.Comments)
+                                              .FirstOrDefaultAsync(t => t.Comments.Any(c => c.Id == commentId));
+
+            if (timelineEntry != null)
+            {
+                var existingComment = timelineEntry.Comments.FirstOrDefault(c => c.Id == commentId);
+                if (existingComment != null)
+                {
+                    existingComment.Content = comment;
+                    existingComment.EditedTimestamp = DateTime.Now;
+                    existingComment.IsEdited = true;
+                    _context.Update(timelineEntry);
+                    await _context.SaveChangesAsync();
+                }
+                return RedirectToAction("Details", new { id = timelineEntry.ProjectId });
+            }
+            return NotFound();
+        }
+
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            var timelineEntry = await _context.Timelines
+                                              .Include(t => t.Comments)
+                                              .FirstOrDefaultAsync(t => t.Comments.Any(c => c.Id == id));
+
+            if (timelineEntry != null)
+            {
+                var projectId = timelineEntry.ProjectId;
+                var comment = timelineEntry.Comments.FirstOrDefault(c => c.Id == id);
+
+                if (comment != null)
+                {
+                    timelineEntry.Comments.Remove(comment);
+                    _context.Remove(comment);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new { id = projectId });
+                }
+            }
+
+            return NotFound();
+        }
+
+
+
+
 
 
 
