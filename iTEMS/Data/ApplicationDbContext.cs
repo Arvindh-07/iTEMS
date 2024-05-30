@@ -20,6 +20,9 @@ namespace iTEMS.Data
         public DbSet<iTEMS.Models.Project> Project { get; set; } = default!;
         public DbSet<iTEMS.Models.InAppNotification> InAppNotification { get; set; } = default!;
 
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<CommentFile> CommentFiles { get; set; } // Add this DbSet
+
 
     }
 }
