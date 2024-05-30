@@ -32,6 +32,17 @@
             background-color: transparent;
             border-color: transparent;
         }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 <body class="hold-transition dark-mode sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -194,9 +205,9 @@
     </div>
 
     <br />
-    <footer class="border-top footer text-muted" style="position: fixed; bottom: 0; width: 100%;">
-        <div class="container">
-            &copy; 2024 - iTEMS - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer text-muted">
+        <div class="container" style="text-align: center;">
+            &copy; 2024 Powered by InnotechLabs. All rights reserved - iTEMS | <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 
