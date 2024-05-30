@@ -20,6 +20,90 @@
     <link rel="stylesheet" href="~/AdminLTE/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <!-- Theme style -->
     <style>
+        /* Add these styles to define the light and dark themes */
+        .dark-mode .navbar {
+            background-color: #343a40; /* Dark theme background color */
+            color: white; /* Dark theme text color */
+        }
+
+        .dark-mode .sidebar-dark-primary {
+            background-color: #343a40; /* Dark theme sidebar background color */
+        }
+
+            .dark-mode .sidebar-dark-primary .brand-link:not([class*=navbar]) {
+                background-color: #343a40 !important; /* Dark theme sidebar background color */
+            }
+
+
+
+        .dark-mode .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #343a40;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dark-mode .footer .container {
+            color: #d4edda;
+        }
+
+            .dark-mode .footer .container a{
+                 color: #007bff;
+            }
+
+        /* Add other dark mode styles here */
+
+        /* Add light theme styles */
+        .navbar {
+            background-color: #007bff; /* Light theme background color */
+            color: white; /* Light theme text color */
+        }
+
+        .sidebar-dark-primary {
+            background-color: #007bff; /* Light theme sidebar background color */
+        }
+
+        .preloader {
+            background-color: #007bff; /* Light theme sidebar background color */
+        }
+
+        .layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
+            background-color: #007bff; /* Light theme sidebar background color */
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #007bff;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .footer .container {
+            color: #333;
+        }
+
+            .footer .container a{
+                color: black;
+            }
+
+        .nav-sidebar .nav-link {
+            color: #333; /* Light theme sidebar link text color */
+        }
+
+            .nav-sidebar .nav-link:hover {
+                background-color: #e9ecef; /* Light theme sidebar link hover background color */
+            }
+
+        /* Add other light mode styles here */
+
         .notification-unopened {
             background-color: #f8d7da; /* Light red background for unopened notifications */
         }
@@ -31,17 +115,6 @@
         .transparent-btn {
             background-color: transparent;
             border-color: transparent;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #333;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
     </style>
 </head>
@@ -60,6 +133,18 @@
             </ul>
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+                <!-- Add the toggle button here -->
+                <li class="nav-item">
+                    <button id="darkModeBtn" class="nav-link btn btn-link" style="color: white;" title="Switch to Dark Mode">
+                        <i class="fas fa-moon"></i> Dark Mode
+                    </button>
+                </li>
+                <!-- Add the light mode button here -->
+                <li class="nav-item">
+                    <button id="lightModeBtn" class="nav-link btn btn-link" style="color: white;" title="Switch to Light Mode">
+                        <i class="fas fa-sun"></i> Light Mode
+                    </button>
+                </li>
                 <li class="nav-item dropdown">
                    <a class="nav-link" data-toggle="dropdown" href="#" style="color: white;" onmouseover="this.style.backgroundColor='#000000';" onmouseout="this.style.backgroundColor='transparent';">
                         <i class="far fa-bell"></i>
@@ -194,9 +279,6 @@
         </aside>
     </div>
 
-
-
-
     @* <partial name="_LoginPartial" /> *@
     <div class="container">
         <main role="main" class="pb-3">
@@ -210,7 +292,6 @@
             &copy; 2024 Powered by InnotechLabs. All rights reserved - iTEMS | <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
 
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->
@@ -297,9 +378,34 @@
                 "responsive": true,
             });
         });
-    </script>
 
-    <script>
+        $(document).ready(function () {
+            // Function to apply the theme
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    $('body').addClass('dark-mode');
+                } else {
+                    $('body').removeClass('dark-mode');
+                }
+            }
+
+            // Apply theme on page load
+            applyTheme(localStorage.getItem('theme') || 'light');
+
+            // Switch back to light mode specifically
+            $('#lightModeBtn').click(function () {
+                applyTheme('light');
+                localStorage.setItem('theme', 'light');
+            });
+
+            // Switch back to dark mode specifically
+            $('#darkModeBtn').click(function () {
+                applyTheme('dark');
+                localStorage.setItem('theme', 'dark');
+            });
+        });
+
+
         function notificationClicked(notificationId) {
             // Make an AJAX request to mark the notification as opened
             $.ajax({
@@ -347,12 +453,6 @@
             });
         }
     </script>
-
-
-
-
-
-
 </body>
 </html>
 
