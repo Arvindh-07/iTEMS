@@ -34,8 +34,6 @@
                 background-color: #343a40 !important; /* Dark theme sidebar background color */
             }
 
-
-
         .dark-mode .footer {
             position: fixed;
             bottom: 0;
@@ -44,15 +42,15 @@
             height: 50px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center; /* Dark theme footer background color */
         }
 
         .dark-mode .footer .container {
-            color: #d4edda;
+            color: #d4edda; /* Dark theme footer background color */
         }
 
             .dark-mode .footer .container a{
-                 color: #007bff;
+                color: #007bff; /* Dark theme footer background color */
             }
 
         /* Add other dark mode styles here */
@@ -64,10 +62,6 @@
         }
 
         .sidebar-dark-primary {
-            background-color: #007bff; /* Light theme sidebar background color */
-        }
-
-        .preloader {
             background-color: #007bff; /* Light theme sidebar background color */
         }
 
@@ -83,15 +77,15 @@
             height: 50px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center; /* Dark theme footer background color */
         }
 
         .footer .container {
-            color: #333;
+            color: #333; /* Dark theme footer background color */
         }
 
             .footer .container a{
-                color: black;
+                color: black; /* Dark theme footer background color */
             }
 
         .nav-sidebar .nav-link {
@@ -343,8 +337,7 @@
                 "responsive": true,
             });
         });
-    </script>
-    <script>
+
         $(function () {
             $("#dashboard1").DataTable({
                 "responsive": true, "lengthChange": true, "autoWidth": true,
@@ -404,7 +397,6 @@
                 localStorage.setItem('theme', 'dark');
             });
         });
-
 
         function notificationClicked(notificationId) {
             // Make an AJAX request to mark the notification as opened
