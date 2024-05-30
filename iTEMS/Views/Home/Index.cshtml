@@ -1,4 +1,6 @@
 ﻿@page
+@using iTEMS.ViewModels
+@model DashboardViewModel
 @{
     Layout = null;
 }
@@ -246,6 +248,75 @@
             font-weight: bold;
         }
 
+        .grid_3 {
+            display: inline;
+            float: right;
+            position: relative;
+            padding-bottom: 25px;
+            width: calc(33% - 15px);
+        }
+
+        .box-content2 {
+            background: #f9f9f9;
+            width: 400px;
+            overflow: hidden;
+            border-radius: 11px;
+        }
+
+        .col-10 {
+            /* width: calc(48% - 10px); */ /* Adjust width as needed, considering margin */
+            display: inline-block; /* Display inline-block */
+            vertical-align: top; /* Align to the top */
+            margin-right: 20px; /* Adjust margin between columns */
+            margin-bottom: 20px; /* Adjust margin bottom as needed */
+            box-sizing: border-box; /* Ensure padding and border don't add to the width */
+            /* Optionally, you can use float instead of inline-block */
+            /* float: left; */
+        }
+
+        .slider-container2 {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        .slides2 {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide2 {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .slider-container2 img {
+            width: 100%;
+            display: block;
+        }
+
+        .carousel-indicators2 {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+            .carousel-indicators2 button {
+                border: none;
+                background-color: gray;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin: 5px;
+                cursor: pointer;
+            }
+
+            .carousel-indicators2 .active {
+                background-color: black;
+            }
+
         .footer {            
             padding: 20px 0;
             color: #555;
@@ -281,8 +352,17 @@
             text-decoration: none;
         }
 
+        .info-icons {
+            padding-top: 15px;
+        }
+
         .info-icons li {
             list-style: none;
+            padding-top: 5px;
+        }
+
+        .social-icons h5 {
+            padding-bottom: 15px;
         }
 
         .link-1 a, .link-2 a, .link-3 a, .link-4 a {
@@ -341,8 +421,6 @@
             </ul>
         </div>
     </nav>
-
-
 
     <!-- Container for the slider -->
     <div class="slider-container">
@@ -406,6 +484,218 @@
                 </div>
             </div>
         </article>
+
+            <article class="grid_3">
+                <h3 class="margin-bot2">Projects</h3>
+                <div class="box-content2">
+                    <div class="wrapper">
+                        <div class="col-10 col-md-12">
+                            <div class="slider-container2">
+                                <div class="slides2">
+                                    <!-- Slide 1 -->
+                                    @* <div class="slide2">
+                                        <!-- Slide content -->
+                                        <img src="/Assets/AKS Pending.png" width="400" height="250" alt="Slide 6">
+                                    </div> *@
+                                        
+                                    @* @foreach (var projectTaskDetails in Model.ProjectTaskDetailsList)
+                                    {
+                                        var totalTasks = projectTaskDetails.Tasks.Count();
+                                        var pendingTasks = projectTaskDetails.Tasks.Count(t => t.Status == "Pending");
+                                        var planningTasks = projectTaskDetails.Tasks.Count(t => t.Status == "Planning");
+                                        var delayedTasks = projectTaskDetails.Tasks.Count(t => t.Status == "Delayed");
+                                        var blockedTasks = projectTaskDetails.Tasks.Count(t => t.Status == "Blocked");
+                                        var completedTasks = projectTaskDetails.Tasks.Count(t => t.Status == "Completed");
+                                        var percentagePending = (double)pendingTasks / totalTasks * 100;
+                                        var percentagePlanning = (double)planningTasks / totalTasks * 100;
+                                        var percentageDelayed = (double)delayedTasks / totalTasks * 100;
+                                        var percentageBlocked = (double)blockedTasks / totalTasks * 100;
+                                        var percentageCompleted = (float)completedTasks / totalTasks * 100;
+                                        var completionRate = (double)completedTasks / totalTasks * 100;
+                                        string percentagePendingString = percentagePending.ToString("F2"); // Displays two decimal places
+                                        string percentagePlanningString = percentagePlanning.ToString("F2"); // Displays two decimal places
+                                        string percentageDelayedString = percentageDelayed.ToString("F2"); // Displays two decimal places
+                                        string percentageBlockedString = percentageBlocked.ToString("F2"); // Displays two decimal places
+                                        string percentageCompletedString = percentageCompleted.ToString("F2"); // Displays two decimal places
+                                        string completionRateString = completionRate.ToString("F2"); // Displays two decimal places
+
+                                        var ongoingTasks = pendingTasks + delayedTasks + blockedTasks + planningTasks;
+
+                                        <div class="card">
+                                            <h2 class="d-flex justify-content-between align-items-center">
+                                                <span>
+                                                    @projectTaskDetails.Project.Name
+                                                    @if (projectTaskDetails.Project.Status == ProjectStatus.Completed)
+                                                    {
+                                                        <span class="badge badge-success">COMPLETED</span>
+                                                    }
+                                                    else if (projectTaskDetails.Project.Status == ProjectStatus.Pending)
+                                                    {
+                                                        <span class="badge badge-secondary">PENDING</span>
+                                                    }
+                                                    else if (projectTaskDetails.Project.Status == ProjectStatus.Planning)
+                                                    {
+                                                        <span class="badge badge-info">PLANNING</span>
+                                                    }
+                                                    else if (projectTaskDetails.Project.Status == ProjectStatus.Delayed)
+                                                    {
+                                                        <span class="badge badge-warning">DELAYED</span>
+                                                    }
+                                                    else if (projectTaskDetails.Project.Status == ProjectStatus.Blocked)
+                                                    {
+                                                        <span class="badge badge-danger">BLOCKED</span>
+                                                    }
+                                                </span>
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </h2>
+
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <p class="text-center">
+                                                            <strong>Project Start Date: </strong>
+                                                            <span><strong>@projectTaskDetails.Project.StartDate.ToString("dd - MMMMMMMMM - yyyy")</strong></span>
+                                                        </p>
+                                                        <p class="text-center">
+                                                            <strong>Person In Charge: </strong>
+                                                            <span><strong>@projectTaskDetails.Project.PIC</strong></span>
+                                                        </p>
+                                                        <div class="card-body">
+                                                            <canvas id="@($"projectStatusChart_{projectTaskDetails.Project.Id}")" height="180" style="height: 180px;"></canvas>
+                                                        </div>
+                                                        <!-- /.chart-responsive -->
+                                                    </div>
+                                                    <!-- /.col -->
+                                                    <div class="col-md-4">
+                                                        <p class="text-center">
+                                                            <strong>Project Health</strong>
+                                                        </p>
+                                                        <div>
+                                                            <span class="description-text">PROJECT HEALTH</span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.col -->
+                                                </div>
+                                                <!-- /.row -->
+                                            </div>
+                                        </div>
+
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                var ctx_@projectTaskDetails.Project.Id = document.getElementById('@($"projectStatusChart_{projectTaskDetails.Project.Id}")').getContext('2d');
+                                                var taskStatusChart_@projectTaskDetails.Project.Id = new Chart(ctx_@projectTaskDetails.Project.Id, {
+                                                    type: 'doughnut',
+                                                    data: {
+                                                        labels: ['Planning', 'Pending', 'Delayed', 'Blocked', 'Completed'],
+                                                        datasets: [{
+                                                            label: 'Number of Tasks',
+                                                            data: [
+                                            @projectTaskDetails.Tasks.Count(t => t.Status == "Planning"),
+                                            @projectTaskDetails.Tasks.Count(t => t.Status == "Pending"),
+                                            @projectTaskDetails.Tasks.Count(t => t.Status == "Delayed"),
+                                            @projectTaskDetails.Tasks.Count(t => t.Status == "Blocked"),
+                                            @projectTaskDetails.Tasks.Count(t => t.Status == "Completed")
+                                                                                                                                                ],
+                                                            backgroundColor: [
+                                                                'rgba(0, 128, 128, 1)',
+                                                                'rgba(75, 0, 130, 1)',
+                                                                'rgba(255, 165, 0, 1)',
+                                                                'rgba(255, 0, 0, 1)', // Danger color (red)
+                                                                'rgba(0, 128, 0, 1)' // Success color (green)
+
+                                                            ],
+                                                            borderColor: [
+                                                                'rgba(0, 128, 128, 1)',
+                                                                'rgba(75, 0, 130, 1)',
+                                                                'rgba(255, 165, 0, 1)',
+                                                                'rgba(255, 0, 0, 1)', // Danger color (red)
+                                                                'rgba(0, 128, 0, 1)' // Success color (green)
+                                                            ],
+                                                            borderWidth: 1
+                                                        }]
+                                                    },
+                                                    options: {
+                                                        scales: {
+                                                            y: {
+                                                                beginAtZero: true
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            });
+                                        </script>                                           
+                                    } *@
+
+                                    @* <div class="slide2">
+                                        <!-- Slide content -->
+                                        <canvas id="pieChart" width="300" height="300"></canvas>
+                                    </div> *@
+
+                                    @* <!-- Slide 2 -->
+                                    <div class="slide2">
+                                    <!-- Slide content -->
+                                    <img src="/Assets/MSFM Planning.png" width="400" height="250" alt="Slide 7">
+                                    </div> *@
+
+                                    @* <div class="slide2">
+                                        <!-- Slide content -->
+                                        <canvas id="pieChart2" width="300" height="300"></canvas>
+                                    </div> *@
+
+                                    @* <!-- Slide 3 -->
+                                    <div class="slide2">
+                                    <!-- Slide content -->
+                                    <img src="/Assets/MVSC Planning.png" width="400" height="250" alt="Slide 8">
+                                    </div> *@
+
+                                    @* <div class="slide2">
+                                        <!-- Slide content -->
+                                        <canvas id="pieChart3" width="300" height="300"></canvas>
+                                    </div> *@
+
+                                    @* <!-- Slide 4 -->
+                                    <div class="slide2">
+                                    <!-- Slide content -->
+                                    <img src="/Assets/OVIS Pending.png" width="400" height="250" alt="Slide 9">
+                                    </div> *@
+
+                                    @* <div class="slide2">
+                                        <!-- Slide content -->
+                                        <canvas id="pieChart4" width="300" height="300"></canvas>
+                                    </div> *@
+
+                                    <!-- Slide 5 -->
+                                    @* <div class="slide2">
+                                    <!-- Slide content -->
+                                    <img src="/Assets/Project1.jpeg" width="300" height="100" alt="Slide 5">
+                                    </div> *@
+
+                                    @* <div class="slide2">
+                                        <!-- Slide content -->
+                                        <canvas id="pieChart5" width="300" height="300"></canvas>
+                                    </div> *@
+
+                                </div>
+                                <!-- Buttons for navigation -->
+                                <button class="prev" onclick="moveSlide2(-1)">❮</button>
+                                <button class="next" onclick="moveSlide2(1)">❯</button>
+                                <!-- Indicators -->
+                                <div class="carousel-indicators2">
+                                    <button class="active" onclick="currentSlide2(1)"></button>
+                                    <button onclick="currentSlide2(2)"></button>
+                                    <button onclick="currentSlide2(3)"></button>
+                                    <button onclick="currentSlide2(4)"></button>
+                                    <button onclick="currentSlide2(5)"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
         </div>
     </div>
 
@@ -428,11 +718,6 @@
                                 Bandar Puchong Jaya,
                                 47100 Puchong,
                                 Selangor
-                                @*Suite 5-17, Staircase 4,
-                                Pusat Perdagangan KLH,
-                                Bandar Puchong Jaya,
-                                47100 Puchong,
-                                Selangor*@
                             </li>
                             <li>
                                 <i class="fas fa-phone"></i> Phone: +60 16-398 2262
@@ -441,21 +726,6 @@
                                 <i class="fas fa-envelope"></i> Email: info@innotechlabs.com.my
                             </li>
                         </ul>
-
-                        @* <ul>
-                            <li>
-                                <i class="fas fa-map-marker-alt"></i> Address: <br>
-                                Bandar Puchong Jaya, <br>
-                                47100 Puchong, Selangor
-                            </li>
-                            <li>
-                                <i class="fas fa-phone"></i> Phone: +60 16-398 2262
-                            </li>
-                            <li>
-                                <i class="fas fa-envelope"></i> Email: info@innotechlabs.com.my
-                            </li>
-                        </ul> *@
-
                     </div>
                 </div>
 
@@ -547,7 +817,83 @@
         }
 
         showSlides(); // Initial call to start the slider
+
+        let slideIndex2 = 0;
+        const slides2 = document.querySelector('.slides2');
+        const indicators2 = document.querySelectorAll('.carousel-indicators2 button');
+
+        function showSlides2() {
+            const slidesCount2 = slides2.children.length;
+            for (let i = 0; i < indicators2.length; i++) {
+                indicators2[i].classList.remove('active');
+            }
+            slideIndex2++;
+            if (slideIndex2 > slidesCount2) { slideIndex2 = 1 }
+            slides2.style.transform = 'translateX(' + (-100 * (slideIndex2 - 1)) + '%)';
+            indicators2[slideIndex2 - 1].classList.add('active');
+            setTimeout(showSlides2, 5000); // Change slide every 3 seconds
+        }
+
+        function moveSlide2(n) {
+            slideIndex2 += n;
+            if (slideIndex2 < 1) { slideIndex2 = slides2.children.length }
+            if (slideIndex2 > slides2.children.length) { slideIndex2 = 1 }
+            updateSlides2();
+        }
+
+        function currentSlide2(n) {
+            slideIndex2 = n;
+            updateSlides2();
+        }
+
+        function updateSlides2() {
+            for (let i = 0; i < indicators2.length; i++) {
+                indicators2[i].classList.remove('active');
+            }
+            slides2.style.transform = 'translateX(' + (-100 * (slideIndex2 - 1)) + '%)';
+            indicators2[slideIndex2 - 1].classList.add('active');
+        }
+
+        showSlides2(); // Initial call to start the slider
+
+        // JavaScript for creating pie chart on each slide
+        // const pieChartOptions = {
+        //     type: 'pie',
+        //     data: {
+        //         labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4'],
+        //         datasets: [{
+        //             label: 'Pie Chart',
+        //             data: [30, 20, 25, 25], // Example data, replace with your own
+        //             backgroundColor: [
+        //                 'rgba(255, 99, 132, 0.7)',
+        //                 'rgba(54, 162, 235, 0.7)',
+        //                 'rgba(255, 206, 86, 0.7)',
+        //                 'rgba(75, 192, 192, 0.7)'
+        //             ],
+        //             borderColor: [
+        //                 'rgba(255, 99, 132, 1)',
+        //                 'rgba(54, 162, 235, 1)',
+        //                 'rgba(255, 206, 86, 1)',
+        //                 'rgba(75, 192, 192, 1)'
+        //             ],
+        //             borderWidth: 1
+        //         }]
+        //     },
+        //     options: {
+        //         // Add options here if needed
+        //     }
+        // };
+
+        // const pieChart1 = new Chart(document.getElementById('pieChart1').getContext('2d'), pieChartOptions);
+        // const pieChart2 = new Chart(document.getElementById('pieChart2').getContext('2d'), pieChartOptions);
+        // const pieChart3 = new Chart(document.getElementById('pieChart3').getContext('2d'), pieChartOptions);
+        // const pieChart4 = new Chart(document.getElementById('pieChart4').getContext('2d'), pieChartOptions);
+        // const pieChart5 = new Chart(document.getElementById('pieChart5').getContext('2d'), pieChartOptions);
+
+        // // Add more pie charts as needed for each slide
+
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

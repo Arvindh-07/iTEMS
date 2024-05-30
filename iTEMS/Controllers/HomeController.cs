@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using iTEMS.Data;
+using iTEMS.ViewModels;
 
 namespace iTEMS.Controllers
 {
-    //[Authorize]
     public class HomeController : BaseController
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -25,30 +25,85 @@ namespace iTEMS.Controllers
             _context = context;
         }
 
-        //[Authorize]
         public async Task<IActionResult> Index()
         {
-            //// Retrieve the current user
-            //var currentUser = await _userManager.GetUserAsync(User);
+            // To be done           
+            await SetNotificationsInViewBag();
+            var activeTasks = await _context.TaskTrackers
+            .Include(t => t.Project) // Include the project data
+            .Where(t => t.Status == "Planning" || t.Status == "Pending" || t.Status == "Delayed" || t.Status == "Blocked")
+            .ToListAsync();
 
-            //// Retrieve the employee based on the current user's email
-            //var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email == currentUser.UserName);
+            var viewModel = new DashboardViewModel
+            {
 
-            //// Check if an employee record with a matching email was found
-            //if (employee != null)
-            //{
-            //    // If a matching employee record is found, display the first name
-            //    ViewBag.DisplayName = employee.FirstName;
-            //}
-            //else
-            //{
-            //    // If no matching employee record is found, display the email
-            //    ViewBag.DisplayName = "Test";
-            //}
+                TotalProjects = _context.Project.Count(),
+                PlanningProjects = _context.Project.Count(p => p.Status == ProjectStatus.Planning),
+                PendingProjects = _context.Project.Count(p => p.Status == ProjectStatus.Pending),
+                DelayedProjects = _context.Project.Count(p => p.Status == ProjectStatus.Delayed),
+                BlockedProjects = _context.Project.Count(p => p.Status == ProjectStatus.Blocked),
+                CompletedProjects = _context.Project.Count(p => p.Status == ProjectStatus.Completed),
+                ActiveProjectsList = _context.Project.Where(p => p.Status == ProjectStatus.Planning || p.Status == ProjectStatus.Pending || p.Status == ProjectStatus.Delayed || p.Status == ProjectStatus.Blocked || p.Status == ProjectStatus.Completed).ToList(),
+                TeamMembers = _context.Employees.ToList(),
+                TotalTasks = _context.TaskTrackers.Count(),
+                PlanningTasks = _context.TaskTrackers.Count(t => t.Status == "Planning"),
+                PendingTasks = _context.TaskTrackers.Count(t => t.Status == "Pending"),
+                DelayedTasks = _context.TaskTrackers.Count(t => t.Status == "Delayed"),
+                BlockedTasks = _context.TaskTrackers.Count(t => t.Status == "Blocked"),
+                CompletedTasks = _context.TaskTrackers.Count(t => t.Status == "Completed"),
+                ActiveTasksList = _context.TaskTrackers.Where(t => t.Status == "Planning" || t.Status == "Pending" || t.Status == "Delayed" || t.Status == "Blocked").ToList(),
 
-            //// Call the SetNotificationsInViewBag method from the base controller to set notifications
-            //await SetNotificationsInViewBag();
-            return View();
+                TeamMembersProjects = new Dictionary<Employee, List<Project>>(),
+                TeamMembersTasks = new Dictionary<Employee, List<TaskTracker>>(),
+                TaskAssignments = new Dictionary<int, string>()
+            };
+
+            var employees = await _context.Employees.ToListAsync();
+
+            foreach (var task in viewModel.ActiveTasksList)
+            {
+                var employee = employees.FirstOrDefault(e => e.Id == task.AssignedTo);
+                if (employee != null)
+                {
+                    viewModel.TaskAssignments[task.Id] = employee.FullName;
+                }
+            }
+
+            foreach (var member in viewModel.TeamMembers)
+            {
+                var projects = await _context.Project
+                    .Where(p => p.Tasks.Any(t => t.AssignedTo == member.Id) &&
+                                p.Status != ProjectStatus.Completed)
+                    .ToListAsync();
+
+                var tasks = await _context.TaskTrackers
+                    .Where(t => t.AssignedTo == member.Id &&
+                                t.Status != TaskTracker.TaskTrackerStatus.Completed.ToString())
+                    .ToListAsync();
+
+                viewModel.TeamMembersProjects.Add(member, projects);
+                viewModel.TeamMembersTasks.Add(member, tasks);
+            }
+
+            var projectTaskDetailsList = new List<ProjectTaskDetails>();
+
+            foreach (var project in viewModel.ActiveProjectsList)
+            {
+                var projectTaskDetails = new ProjectTaskDetails
+                {
+                    Project = project,
+                    Tasks = await _context.TaskTrackers
+                                .Where(t => t.ProjectId == project.Id)
+                                .ToListAsync()
+                };
+
+                projectTaskDetailsList.Add(projectTaskDetails);
+            }
+
+            viewModel.ProjectTaskDetailsList = projectTaskDetailsList;
+
+            return View(viewModel);
+            //return View();
         }
 
         public IActionResult Privacy()
