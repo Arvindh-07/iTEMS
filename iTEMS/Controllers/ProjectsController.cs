@@ -38,10 +38,12 @@ namespace iTEMS.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var project = await _context.Project
-        .Include(p => p.Timelines)
-            .ThenInclude(t => t.Comments)
-                .ThenInclude(c => c.CommentFiles)
-        .FirstOrDefaultAsync(p => p.Id == id);
+                .Include(p => p.Timelines)
+                    .ThenInclude(t => t.TimelineFiles)
+                .Include(p => p.Timelines)
+                    .ThenInclude(t => t.Comments)
+                        .ThenInclude(c => c.CommentFiles)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (project == null)
             {
@@ -53,6 +55,7 @@ namespace iTEMS.Controllers
 
             return View(project);
         }
+
 
         // GET: Projects/Create
         public async Task<IActionResult> Create()
@@ -282,13 +285,8 @@ namespace iTEMS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PostUpdate(int id, string update)
+        public async Task<IActionResult> PostUpdate(int id, string update, List<IFormFile> files)
         {
-            if (string.IsNullOrWhiteSpace(update))
-            {
-                return RedirectToAction("Details", new { id });
-            }
-
             var project = await _context.Project.FindAsync(id);
             if (project == null)
             {
@@ -303,14 +301,42 @@ namespace iTEMS.Controllers
                 Type = "Update Posted",
                 Description = update,
                 UserInvolved = currentUser.UserName,
-                Timestamp = DateTime.Now
+                Timestamp = DateTime.Now,
+                TimelineFiles = new List<TimelineFile>()
             };
+
+            if (files != null && files.Count > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/updates");
+                Directory.CreateDirectory(uploadsFolder);
+
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var fileName = Path.GetFileName(file.FileName);
+                        var filePath = Path.Combine(uploadsFolder, fileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        var timelineFile = new TimelineFile
+                        {
+                            FilePath = $"uploads/updates/{fileName}",
+                            FileName = fileName,
+                            Timeline = timelineEntry
+                        };
+                        timelineEntry.TimelineFiles.Add(timelineFile);
+                    }
+                }
+            }
 
             _context.Timelines.Add(timelineEntry);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Details", new { id });
+            return RedirectToAction("Details", new { id = project.Id });
         }
+
 
 
 
@@ -554,7 +580,7 @@ namespace iTEMS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostComment(int id, string comment, List<IFormFile> files)
+        public async Task<IActionResult> PostComment(int id, string comment, List<IFormFile> commentFiles)
         {
             var timelineEntry = await _context.Timelines.Include(t => t.Comments).ThenInclude(c => c.CommentFiles).FirstOrDefaultAsync(t => t.Id == id);
             var currentUser = await _userManager.GetUserAsync(User);
@@ -565,15 +591,16 @@ namespace iTEMS.Controllers
                 {
                     User = currentUser.UserName,
                     Content = comment,
-                    Timestamp = DateTime.Now
+                    Timestamp = DateTime.Now,
+                    CommentFiles = new List<CommentFile>()
                 };
 
-                if (files != null && files.Count > 0)
+                if (commentFiles != null && commentFiles.Count > 0)
                 {
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/comments");
                     Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
 
-                    foreach (var file in files)
+                    foreach (var file in commentFiles)
                     {
                         if (file.Length > 0)
                         {
@@ -586,7 +613,8 @@ namespace iTEMS.Controllers
                             var commentFile = new CommentFile
                             {
                                 FilePath = $"uploads/comments/{fileName}",
-                                FileName = fileName
+                                FileName = fileName,
+                                Comment = newComment
                             };
                             newComment.CommentFiles.Add(commentFile);
                         }
@@ -602,6 +630,8 @@ namespace iTEMS.Controllers
 
             return NotFound();
         }
+
+
 
 
 

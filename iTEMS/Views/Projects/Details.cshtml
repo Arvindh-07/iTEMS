@@ -223,7 +223,6 @@
                                                                 <i class="fa fa-pencil-alt"></i>
                                                             </button>
                                                         }
-
                                                         <form action="/Projects/DeleteComment" method="post" class="d-inline">
                                                             <input type="hidden" name="id" value="@comment.Comment.Id">
                                                             <button type="submit" class="btn btn-sm transparent-button" title="Delete comment" onclick="return confirm('Are you sure you want to delete this comment?');">
@@ -256,9 +255,9 @@
                                 </div>
                             </div>
                         }
-
                     </div>
                 </div>
+
 
                 @if (totalTimelinePages > 1)
                 {
@@ -455,6 +454,57 @@
     function cancelEdit(commentId) {
         location.reload(); // Reload the page to revert to the original state
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const customUpdateFileButton = document.getElementById("customUpdateFileButton");
+        const updateFileInput = document.getElementById("updateFileInput");
+        const updateFileList = document.getElementById("updateFileList");
+        let updateFiles = [];
+
+        customUpdateFileButton.addEventListener("click", function () {
+            updateFileInput.click();
+        });
+
+        updateFileInput.addEventListener("change", handleUpdateFileSelect);
+
+        function handleUpdateFileSelect(event) {
+            const selectedFiles = Array.from(event.target.files);
+            updateFiles = updateFiles.concat(selectedFiles);
+            updateUpdateFileList();
+        }
+
+        function updateUpdateFileList() {
+            updateFileList.innerHTML = '';
+            updateFiles.forEach((file, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = file.name;
+                const removeButton = document.createElement('button');
+                removeButton.innerHTML = '&times;';
+                removeButton.type = 'button';
+                removeButton.classList.add('remove-button');
+                removeButton.addEventListener('click', () => {
+                    updateFiles.splice(index, 1);
+                    updateUpdateFileInput();
+                    updateUpdateFileList();
+                });
+                listItem.appendChild(removeButton);
+                updateFileList.appendChild(listItem);
+            });
+        }
+
+        function updateUpdateFileInput() {
+            const dataTransfer = new DataTransfer();
+            updateFiles.forEach(file => dataTransfer.items.add(file));
+            updateFileInput.files = dataTransfer.files;
+        }
+
+        document.getElementById("updateForm").addEventListener("submit", function (event) {
+            updateUpdateFileInput();
+        });
+    });
+
+
+
 </script>
 
 
