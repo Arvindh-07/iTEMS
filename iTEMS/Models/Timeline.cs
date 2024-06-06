@@ -17,7 +17,18 @@ namespace iTEMS.Models
         public Project? Project { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
 
+        public List<TimelineFile> TimelineFiles { get; set; } = new List<TimelineFile>();
+
         // You can add more properties as needed, such as UserId to track who performed the activity
+    }
+
+    public class TimelineFile
+    {
+        public int Id { get; set; }
+        public string? FilePath { get; set; } // To store the file path
+        public string? FileName { get; set; } // To store the original file name
+        public int TimelineId { get; set; }
+        public Timeline Timeline { get; set; }
     }
 
     public class Comment
@@ -35,6 +46,7 @@ namespace iTEMS.Models
         public string? FileNameComment { get; set; } // To store the original file name
 
         public List<CommentFile> CommentFiles { get; set; } = new List<CommentFile>();
+
     }
 
     public class CommentFile

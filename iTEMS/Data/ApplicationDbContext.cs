@@ -23,6 +23,7 @@ namespace iTEMS.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentFile> CommentFiles { get; set; } // Add this DbSet
 
+        public DbSet<TimelineFile> TimelineFiles { get; set; }
 
     }
 }

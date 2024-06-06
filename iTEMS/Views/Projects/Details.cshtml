@@ -40,6 +40,19 @@
     .hidden-comment {
         display: none;
     }
+
+    .remove-button {
+        margin-left: 10px;
+        background: none;
+        border: none;
+        color: red;
+        font-size: 1.2em;
+        cursor: pointer;
+    }
+
+    .remove-button:hover {
+        color: darkred;
+    }
 </style>
 
 
@@ -88,16 +101,23 @@
 
                 <div class="card border-only mt-3">
                     <div class="card-body">
-                        <h5 class="card-title">Post an Update</h5>
-                        <form asp-action="PostUpdate" asp-route-id="@Model.Id" method="post">
+                        <h5 class="card-title">Start a Thread</h5>
+                        <form asp-action="PostUpdate" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" id="updateForm">
                             <div class="form-group">
                                 <label for="Update"></label>
                                 <input type="text" id="Update" name="Update" class="form-control" />
                             </div>
+                            <div class="form-group">
+                                <label for="updateFileInput">Attach files:</label>
+                                <input type="file" id="updateFileInput" name="files" class="form-control" multiple style="display:none;" />
+                                <button type="button" id="customUpdateFileButton" class="btn btn-secondary">Choose Files</button>
+                            </div>
+                            <ul id="updateFileList"></ul>
                             <button type="submit" class="btn btn-primary">Post Update</button>
                         </form>
                     </div>
                 </div>
+
 
                 @{
                     int timelinePageSize = 5;
@@ -147,6 +167,18 @@
                                                 break;
                                             case "Update Posted":
                                                 <text>@entry.Description</text>
+                                                @if (entry.TimelineFiles.Any())
+                                                {
+                                                    <br />
+                                                    <ol>
+                                                        @foreach (var file in entry.TimelineFiles)
+                                                        {
+                                                            <li>
+                                                                <a href="@Url.Content("~/" + file.FilePath)" download>@file.FileName</a>
+                                                            </li>
+                                                        }
+                                                    </ol>
+                                                }
                                                 break;
                                             case "Status Change":
                                                 <text>@entry.Description</text>
@@ -173,18 +205,25 @@
                                                     @if (comment.Comment.CommentFiles.Any())
                                                     {
                                                         <br />
-                                                        @foreach (var file in comment.Comment.CommentFiles)
-                                                        {
-                                                            <a href="@Url.Content("~/" + file.FilePath)" download>@file.FileName</a>
-
-                                                            <br />
-                                                        }
+                                                        <ol>
+                                                            @foreach (var file in comment.Comment.CommentFiles)
+                                                            {
+                                                                <li>
+                                                                    <a href="@Url.Content("~/" + file.FilePath)" download>@file.FileName</a>
+                                                                    <br />
+                                                                </li>
+                                                            }
+                                                        </ol>
                                                     }
 
                                                     <div class="comment-actions position-absolute" style="top: 0; right: 0;">
-                                                        <button class="btn btn-sm transparent-button" onclick="editComment(@comment.Comment.Id, `@Html.Raw(@comment.Comment.Content.Replace("`", "\\`"))`)" title="Edit comment">
-                                                            <i class="fa fa-pencil-alt"></i>
-                                                        </button>
+                                                        @if (!string.IsNullOrEmpty(comment.Comment.Content))
+                                                        {
+                                                            <button class="btn btn-sm transparent-button" onclick="editComment(@comment.Comment.Id, `@(Html.Raw(@comment.Comment.Content?.Replace("`", "\\`") ?? string.Empty))`)" title="Edit comment">
+                                                                <i class="fa fa-pencil-alt"></i>
+                                                            </button>
+                                                        }
+
                                                         <form action="/Projects/DeleteComment" method="post" class="d-inline">
                                                             <input type="hidden" name="id" value="@comment.Comment.Id">
                                                             <button type="submit" class="btn btn-sm transparent-button" title="Delete comment" onclick="return confirm('Are you sure you want to delete this comment?');">
@@ -200,15 +239,17 @@
                                         {
                                             <button class="btn btn-secondary" onclick="loadMoreComments(@entry.Id, 5)">Show more</button>
                                         }
-                                        <form asp-action="PostComment" asp-route-id="@entry.Id" method="post" enctype="multipart/form-data">
+                                        <form asp-action="PostComment" asp-route-id="@entry.Id" method="post" enctype="multipart/form-data" id="commentForm-@entry.Id">
                                             <div class="form-group">
-                                                <label for="comment">Add a comment:</label>
-                                                <textarea id="comment" name="comment" class="form-control"></textarea>
+                                                <label for="Comment">Comment</label>
+                                                <textarea id="Comment" name="Comment" class="form-control"></textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label for="files">Attach files:</label>
-                                                <input type="file" id="files" name="files" class="form-control" multiple />
+                                                <label for="commentFileInput-@entry.Id">Attach files:</label>
+                                                <input type="file" id="commentFileInput-@entry.Id" name="commentFiles" class="form-control" multiple style="display:none;" />
+                                                <button type="button" class="customCommentFileButton btn btn-secondary" data-file-input="commentFileInput-@entry.Id" data-file-list="commentFileList-@entry.Id">Choose Files</button>
                                             </div>
+                                            <ul id="commentFileList-@entry.Id"></ul>
                                             <button type="submit" class="btn btn-primary">Post Comment</button>
                                         </form>
                                     </div>
@@ -303,6 +344,8 @@
 </div>
 
 <script>
+
+
     function editComment(commentId, commentContent) {
         const commentElement = document.getElementById(`comment-${commentId}`);
         commentElement.innerHTML = `
@@ -332,7 +375,60 @@
         }
     }
 
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.customCommentFileButton').forEach(button => {
+            const fileInputId = button.getAttribute('data-file-input');
+            const fileListId = button.getAttribute('data-file-list');
+            initializeFileHandling(fileInputId, fileListId, button);
+        });
 
+        function initializeFileHandling(fileInputId, fileListId, customFileButton) {
+            const fileInput = document.getElementById(fileInputId);
+            const fileList = document.getElementById(fileListId);
+            let files = [];
+
+            customFileButton.addEventListener('click', function () {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', handleFileSelect);
+
+            function handleFileSelect(event) {
+                const selectedFiles = Array.from(event.target.files);
+                files = files.concat(selectedFiles);
+                updateFileList();
+            }
+
+            function updateFileList() {
+                fileList.innerHTML = '';
+                files.forEach((file, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = file.name;
+                    const removeButton = document.createElement('button');
+                    removeButton.innerHTML = '&times;';
+                    removeButton.type = 'button';
+                    removeButton.classList.add('remove-button');
+                    removeButton.addEventListener('click', () => {
+                        files.splice(index, 1);
+                        updateFileInput();
+                        updateFileList();
+                    });
+                    listItem.appendChild(removeButton);
+                    fileList.appendChild(listItem);
+                });
+            }
+
+            function updateFileInput() {
+                const dataTransfer = new DataTransfer();
+                files.forEach(file => dataTransfer.items.add(file));
+                fileInput.files = dataTransfer.files;
+            }
+
+            customFileButton.closest('form').addEventListener('submit', function (event) {
+                updateFileInput();
+            });
+        }
+    });
 
     // function cancelEdit(commentId, commentContent, commentUserId, commentTimestampId) {
     //     const commentElement = document.getElementById(`comment-${commentId}`);
