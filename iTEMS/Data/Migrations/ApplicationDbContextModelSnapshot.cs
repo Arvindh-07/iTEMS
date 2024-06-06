@@ -605,6 +605,30 @@ namespace iTEMS.Data.Migrations
                     b.ToTable("Timelines");
                 });
 
+            modelBuilder.Entity("iTEMS.Models.TimelineFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TimelineId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TimelineId");
+
+                    b.ToTable("TimelineFiles");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -715,6 +739,17 @@ namespace iTEMS.Data.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("iTEMS.Models.TimelineFile", b =>
+                {
+                    b.HasOne("iTEMS.Models.Timeline", "Timeline")
+                        .WithMany("TimelineFiles")
+                        .HasForeignKey("TimelineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Timeline");
+                });
+
             modelBuilder.Entity("iTEMS.Models.Comment", b =>
                 {
                     b.Navigation("CommentFiles");
@@ -730,6 +765,8 @@ namespace iTEMS.Data.Migrations
             modelBuilder.Entity("iTEMS.Models.Timeline", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("TimelineFiles");
                 });
 #pragma warning restore 612, 618
         }
